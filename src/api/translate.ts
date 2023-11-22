@@ -1,6 +1,14 @@
-import req from "@/lib/request";
 import type {Response} from "@/lib/request";
-import type {Translate, BaiduConfig, YouDaoConfig, GoogleConfig, DeeplConfig, ConfigList} from "@/types/props";
+import req from "@/lib/request";
+import type {
+    BaiduConfig,
+    ConfigList,
+    DeeplConfig,
+    GoogleConfig,
+    RequestRecord,
+    Translate,
+    YouDaoConfig
+} from "@/types/props";
 
 
 export const translateRequest = (
@@ -38,5 +46,15 @@ export const getConfigList = () => {
     return req<Response<ConfigList[]>>({
         url: '/api/getConfigList',
         method: 'GET'
+    })
+}
+
+export const getRequestRecord = (
+    params: {page: number, size: number} = {page: 1, size: 10}
+) => {
+    return req<Response<RequestRecord>>({
+        url: '/api/getRequestRecord',
+        method: 'GET',
+        params
     })
 }

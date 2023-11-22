@@ -67,3 +67,19 @@ export type ConfigList = {
     status: number,
     'type': string
 }
+
+export type RequestRecordList = {
+    id: number
+    body: string,
+    clientIp: string,
+    errMsg: string,
+    status: number,
+    statusName: string,
+    createTime: string,
+    updateTime: string
+}
+
+export type RequestRecord = {
+    count: number,
+    list: RequestRecordList[]
+}

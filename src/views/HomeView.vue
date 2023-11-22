@@ -7,17 +7,19 @@
       <el-row id="app-view-body-row">
         <AddConfig v-if="selectMenu == 1" />
         <Translate v-if="selectMenu == 2" />
+        <HistoryRecord v-if="selectMenu == 3" />
       </el-row>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import {ref} from "vue";
-  import AddConfig from "@/components/AddConfig.vue";
-  import Translate from "@/components/Translate.vue";
+import {ref} from "vue";
+import AddConfig from "@/components/AddConfig.vue";
+import Translate from "@/components/Translate.vue";
+import HistoryRecord from "@/components/HistoryRecord.vue";
 
-  const selectMenu = ref<number>(3)
+const selectMenu = ref<number>(3)
 
   const menu = ref<{id: number, title: string}[]>([
     {

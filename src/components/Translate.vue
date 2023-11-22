@@ -53,12 +53,7 @@
 import {reactive, ref} from "vue";
 import {langArr} from "@/lib/common";
 import {translateRequest} from "@/api/translate";
-import type {Translate} from "@/types/props";
 import {ElMessage} from "element-plus";
-
-const fromLangSelected = ref('auto')
-const toLangSelected = ref('en')
-const platformSelected = ref('')
 
 type selectOptionType = {
   value: string,

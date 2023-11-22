@@ -9,6 +9,7 @@ let baseKey = ''
 const request = axios.create({
     baseURL: 'http://127.0.0.1:9431',
     timeout: 60 * 1000,
+    params: {}
 });
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
     config.params['key'] = localStorage.getItem('key')

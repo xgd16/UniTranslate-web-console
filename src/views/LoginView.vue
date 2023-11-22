@@ -28,7 +28,10 @@ const submit = () => {
     ElMessage.warning('Key 不能为空')
     return
   }
+  console.log(form.key)
+  localStorage.clear()
   localStorage.setItem('key', form.key)
+
   router.push('/')
 }
 </script>

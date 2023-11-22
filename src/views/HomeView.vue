@@ -19,7 +19,7 @@ import AddConfig from "@/components/AddConfig.vue";
 import Translate from "@/components/Translate.vue";
 import HistoryRecord from "@/components/HistoryRecord.vue";
 
-const selectMenu = ref<number>(3)
+const selectMenu = ref<number>(2)
 
   const menu = ref<{id: number, title: string}[]>([
     {

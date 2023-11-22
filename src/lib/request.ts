@@ -1,12 +1,12 @@
+import type {AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
 import axios from 'axios'
-import type {AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosError} from 'axios'
 import {ElMessage} from "element-plus";
 // 创建axios实例
 const request = axios.create({
     baseURL: 'http://127.0.0.1:9431',
-    timeout: 6 * 1000,
+    timeout: 60 * 1000,
     params: {
-        key: "6tRiPmeoqYz3yOm15xN259zsTZpn6s6t6EMNtRD1nHrwfmm4ffCcY8slalqyPMwy"
+        key: localStorage.getItem('key')
     }
 });
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {

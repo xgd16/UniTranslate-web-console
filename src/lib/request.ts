@@ -2,6 +2,7 @@ import type {AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequest
 import axios from 'axios'
 import {ElMessage} from "element-plus";
 import Router from "@/router";
+import { isJSON } from './common';
 
 let baseKey = ''
 
@@ -9,6 +10,7 @@ let baseKey = ''
 const request = axios.create({
     baseURL: 'http://127.0.0.1:9431',
     timeout: 60 * 1000,
+    params: {}
 });
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
     config.params['key'] = localStorage.getItem('key')
@@ -30,10 +32,15 @@ request.interceptors.response.use(function (response: AxiosResponse) {
     // 成功返回时处理数据
     return response;
 }, function (error: AxiosError<{code: number, msg: string, time: number}>) {
-    let data = error.response?.data
-    if (data) {
+    let data = error.response?.data ?? {code: 1001, msg: '发起请求失败', time: Date.now()}
+    console.log('请求出错', error.response)
+    let isJson: boolean = isJSON(data)
+    if (data && !isJson && error.response?.status == 404) {
         ElMessage.error(data.msg ?? '操作出错')
         Router.push('/login').then(r => {})
+    }
+    if (data.code != 1000) {
+        ElMessage.error(data.msg)
     }
     // 出错时调用
     return Promise.reject(error);

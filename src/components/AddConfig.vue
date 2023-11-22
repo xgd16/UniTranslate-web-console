@@ -138,8 +138,8 @@ refreshTableListArr()
 
 const form = reactive<AddConfigForm>({
   platform: '',
-  status: false,
-  level: 0,
+  status: true,
+  level: 1,
   cfg: null,
   typeCfg: 'Baidu'
 })

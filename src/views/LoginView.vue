@@ -17,12 +17,17 @@
 <script setup lang="ts">
 import {reactive} from "vue";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const form = reactive({
   key: '',
 })
 
 const submit = () => {
+  if (!form.key) {
+    ElMessage.warning('Key 不能为空')
+    return
+  }
   localStorage.setItem('key', form.key)
   router.push('/')
 }

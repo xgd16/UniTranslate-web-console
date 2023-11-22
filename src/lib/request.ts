@@ -11,9 +11,7 @@ const request = axios.create({
     timeout: 60 * 1000,
 });
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
-    config.params = {
-        key: localStorage.getItem('key')
-    }
+    config.params['key'] = localStorage.getItem('key')
     // 在发送请求之前做些什么
     return config;
 }, function (error: any) {

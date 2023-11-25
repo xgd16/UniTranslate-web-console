@@ -144,10 +144,10 @@ const form = reactive<AddConfigForm>({
   typeCfg: 'Baidu'
 })
 
-const baiduConfig = ref<BaiduConfig>({key: '', appId: '', url: '', curlTimeOut: 1000})
-const youDaoConfig = ref<YouDaoConfig>({appKey: '', secKey: '', url: '', curlTimeOut: 1000})
-const googleConfig = ref<GoogleConfig>({key: '', url: '', curlTimeOut: 1000})
-const deeplConfig = ref<DeeplConfig>({key: '', url: '', curlTimeOut: 1000})
+const baiduConfig = ref<BaiduConfig>({key: '', appId: '', url: 'https://fanyi-api.baidu.com/api/trans/vip/translate', curlTimeOut: 1000})
+const youDaoConfig = ref<YouDaoConfig>({appKey: '', secKey: '', url: 'https://openapi.youdao.com/api', curlTimeOut: 1000})
+const googleConfig = ref<GoogleConfig>({key: '', url: 'https://translation.googleapis.com/language/translate/v2', curlTimeOut: 1000})
+const deeplConfig = ref<DeeplConfig>({key: '', url: 'https://api.deepl.com/v2/translate', curlTimeOut: 1000})
 
 const submit = () => {
   // create config data

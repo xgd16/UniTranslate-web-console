@@ -2,6 +2,7 @@ import type {Response} from "@/lib/request";
 import req from "@/lib/request";
 import type {
     BaiduConfig,
+    ChatGPTConfig,
     ConfigList,
     DeeplConfig,
     GoogleConfig,
@@ -31,7 +32,7 @@ export const addConfigRequest = (
         platform: string,
         status: boolean,
         level: number,
-        cfg: BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig
+        cfg: BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig
         "type": string,
     }
 ) => {

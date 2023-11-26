@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" class="el-col-12" label-width="120px" label-position="top">
+  <el-form v-loading="loading" :model="form" class="el-col-12" label-width="120px" label-position="top">
     <el-form-item label="源文本语言">
       <el-select-v2
           v-model="form.fromLang"
@@ -51,9 +51,11 @@
 <script setup lang="ts">
 
 import {reactive, ref} from "vue";
-import {langArr} from "@/lib/common";
+import {langArr, langMap} from "@/lib/common";
 import {translateRequest} from "@/api/translate";
 import {ElMessage} from "element-plus";
+
+const loading = ref(false)
 
 type selectOptionType = {
   value: string,
@@ -67,7 +69,7 @@ for (const k in langArr) {
   const item = langArr[k]
   options.push({
     value: item,
-    label: item,
+    label: `${item} ${langMap[item]}`,
     disabled: false,
   })
 }
@@ -75,7 +77,7 @@ for (const k in langArr) {
 let fromOptions: selectOptionType = [...options]
 fromOptions.unshift({
   value: 'auto',
-  label: 'auto',
+  label: 'auto 自动识别',
   disabled: false
 })
 
@@ -104,6 +106,11 @@ let platformOptions: selectOptionType = [
     value: 'Deepl',
     label: 'Deepl',
     disabled: false
+  },
+  {
+    value: 'ChatGPT',
+    label: 'ChatGPT',
+    disabled: false
   }
 ]
 
@@ -122,14 +129,18 @@ const submitTranslate = () => {
     ElMessage.warning("请填写需要翻译的内容...")
     return
   }
+  loading.value = true
   translateRequest({
     from: form.fromLang,
     to: form.toLang,
     text: form.text,
     platform: form.platform,
   }).then((res) => {
+    loading.value = false
     if (res.code != 1000) return;
     translateBody.value = JSON.stringify(res.data, null, 2)
+  }).catch(() => {
+    loading.value = false
   })
 }
 

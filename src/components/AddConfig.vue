@@ -72,6 +72,11 @@
         <el-input type="number" v-model="deeplConfig.curlTimeOut"></el-input>
       </el-form-item>
     </el-row>
+    <el-row v-if="form.typeCfg == 'ChatGPT'">
+      <el-form-item label="Key" class="el-col-sm-24 p5px">
+        <el-input type="text" v-model="chatGPTConfig.key"></el-input>
+      </el-form-item>
+    </el-row>
     <el-form-item>
       <el-button type="primary" plain @click="submit">提交</el-button>
     </el-form-item>
@@ -92,10 +97,9 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig} from "@/types/props";
+import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig} from "@/types/props";
 import {ElMessage} from "element-plus";
 import {addConfigRequest, getConfigList} from "@/api/translate";
-
 
 type selectOptionType = {
   value: string,
@@ -123,6 +127,11 @@ let platformOptions: selectOptionType = [
     value: 'Deepl',
     label: 'Deepl',
     disabled: false
+  },
+  {
+    value: 'ChatGPT',
+    label: 'ChatGPT',
+    disabled: false
   }
 ]
 
@@ -148,6 +157,7 @@ const baiduConfig = ref<BaiduConfig>({key: '', appId: '', url: 'https://fanyi-ap
 const youDaoConfig = ref<YouDaoConfig>({appKey: '', secKey: '', url: 'https://openapi.youdao.com/api', curlTimeOut: 1000})
 const googleConfig = ref<GoogleConfig>({key: '', url: 'https://translation.googleapis.com/language/translate/v2', curlTimeOut: 1000})
 const deeplConfig = ref<DeeplConfig>({key: '', url: 'https://api.deepl.com/v2/translate', curlTimeOut: 1000})
+const chatGPTConfig = ref<ChatGPTConfig>({key: ''})
 
 const submit = () => {
   // create config data
@@ -163,6 +173,9 @@ const submit = () => {
       break
     case 'Deepl':
       form.cfg = deeplConfig.value
+      break
+    case 'ChatGPT':
+      form.cfg = chatGPTConfig.value
       break
     default:
       ElMessage.warning('不支持的平台')

@@ -52,7 +52,11 @@ export type DeeplConfig = {
     curlTimeOut: number,
 }
 
-export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|null> = {
+export type ChatGPTConfig = {
+    key: string
+}
+
+export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|null> = {
     platform: string,
     status: boolean,
     level: number,
@@ -74,6 +78,7 @@ export type RequestRecordList = {
     clientIp: string,
     errMsg: string,
     status: number,
+    translateType: string,
     statusName: string,
     createTime: string,
     updateTime: string

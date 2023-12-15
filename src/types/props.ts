@@ -78,7 +78,9 @@ export type RequestRecordList = {
     clientIp: string,
     errMsg: string,
     status: number,
-    translateType: string,
+    platform: string,
+    takeTime: number,
+    takeTimeViewStr: string
     statusName: string,
     createTime: string,
     updateTime: string

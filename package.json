@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
+    "build-zip": "run-p type-check \"build-only {@}\" -- && zip dist.zip -r dist",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",

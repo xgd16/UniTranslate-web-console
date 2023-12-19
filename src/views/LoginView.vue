@@ -32,7 +32,7 @@ const submit = () => {
   localStorage.clear()
   localStorage.setItem('key', form.key)
 
-  router.push('/')
+  router.push('/translate')
 }
 </script>
 

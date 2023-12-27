@@ -74,6 +74,7 @@ export type ConfigList = {
 
 export type RequestRecordList = {
     id: number
+    tId: string,
     body: string,
     clientIp: string,
     errMsg: string,

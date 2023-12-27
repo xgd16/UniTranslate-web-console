@@ -1,6 +1,7 @@
 <template>
   <el-table :data="tableData" style="width: 100%" :row-class-name="tableRowClassName">
     <el-table-column prop="id" label="ID" />
+    <el-table-column prop="tId" label="任务ID" />
     <el-table-column prop="clientIp" label="客户端IP" />
     <el-table-column prop="statusName" label="状态" />
     <el-table-column prop="platform" label="翻译类型" />
@@ -68,6 +69,7 @@ const getRequestRecordFunc = (page: number = 1, size: number = pageSize) => {
     tableTotal.value = res.data.count
     res.data.list.forEach((value: RequestRecordList) => {
       value.statusName = value.status == 1 ? '成功' : '失败'
+      value.tId ??= '无'
       value.platform ??= JSON.parse(value.body)['platform'] ?? '无'
       if (value.platform == '') value.platform = '无'
       value.takeTimeViewStr = value.takeTime ? value.takeTime + 'ms' : '无'

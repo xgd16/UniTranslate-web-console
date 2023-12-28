@@ -77,6 +77,17 @@
         <el-input type="text" v-model="chatGPTConfig.key"></el-input>
       </el-form-item>
     </el-row>
+    <el-row v-if="form.typeCfg == 'XunFei' || form.typeCfg == 'XunFeiNiu'">
+      <el-form-item label="appId" class="el-col-sm-12 p5px">
+        <el-input type="text" v-model="xunFeiConfig.appId"></el-input>
+      </el-form-item>
+      <el-form-item label="ApiKey" class="el-col-sm-12 p5px">
+        <el-input type="text" v-model="xunFeiConfig.apiKey"></el-input>
+      </el-form-item>
+      <el-form-item label="Secret" class="el-col-sm-24 p5px">
+        <el-input type="text" v-model="xunFeiConfig.secret"></el-input>
+      </el-form-item>
+    </el-row>
     <el-form-item>
       <el-button type="primary" plain @click="submit">提交</el-button>
     </el-form-item>
@@ -97,7 +108,7 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig} from "@/types/props";
+import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig, XunFeiConfig} from "@/types/props";
 import {ElMessage} from "element-plus";
 import {addConfigRequest, getConfigList} from "@/api/translate";
 
@@ -132,6 +143,16 @@ let platformOptions: selectOptionType = [
     value: 'ChatGPT',
     label: 'ChatGPT',
     disabled: false
+  },
+  {
+    value: 'XunFei',
+    label: 'XunFei',
+    disabled: false
+  },
+  {
+    value: 'XunFeiNiu',
+    label: 'XunFei (niutrans)',
+    disabled: false
   }
 ]
 
@@ -158,6 +179,7 @@ const youDaoConfig = ref<YouDaoConfig>({appKey: '', secKey: '', url: 'https://op
 const googleConfig = ref<GoogleConfig>({key: '', url: 'https://translation.googleapis.com/language/translate/v2', curlTimeOut: 1000})
 const deeplConfig = ref<DeeplConfig>({key: '', url: 'https://api.deepl.com/v2/translate', curlTimeOut: 1000})
 const chatGPTConfig = ref<ChatGPTConfig>({key: ''})
+const xunFeiConfig = ref<XunFeiConfig>({appId: '', apiKey: '', secret: ''})
 
 const submit = () => {
   // create config data
@@ -176,6 +198,12 @@ const submit = () => {
       break
     case 'ChatGPT':
       form.cfg = chatGPTConfig.value
+      break
+    case 'XunFei':
+      form.cfg = xunFeiConfig.value
+      break
+    case 'XunFeiNiu':
+      form.cfg = xunFeiConfig.value
       break
     default:
       ElMessage.warning('不支持的平台')

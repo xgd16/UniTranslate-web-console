@@ -56,7 +56,13 @@ export type ChatGPTConfig = {
     key: string
 }
 
-export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|null> = {
+export type XunFeiConfig = {
+    appId: string,
+    apiKey: string,
+    secret: string
+}
+
+export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|null> = {
     platform: string,
     status: boolean,
     level: number,

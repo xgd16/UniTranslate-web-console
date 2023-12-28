@@ -8,6 +8,7 @@ import type {
     GoogleConfig,
     RequestRecord,
     Translate,
+    XunFeiConfig,
     YouDaoConfig
 } from "@/types/props";
 
@@ -32,7 +33,7 @@ export const addConfigRequest = (
         platform: string,
         status: boolean,
         level: number,
-        cfg: BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig
+        cfg: BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig
         "type": string,
     }
 ) => {

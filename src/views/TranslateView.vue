@@ -111,6 +111,16 @@ let platformOptions: selectOptionType = [
     value: 'ChatGPT',
     label: 'ChatGPT',
     disabled: false
+  },
+  {
+    value: 'XunFei',
+    label: 'XunFei',
+    disabled: false
+  },
+  {
+    value: 'XunFeiNiu',
+    label: 'XunFei (niutrans)',
+    disabled: false
   }
 ]
 

@@ -4,10 +4,13 @@ import {ElMessage} from "element-plus";
 import Router from "@/router";
 import { isJSON, AuthEncrypt } from './common';
 
+localStorage.setItem('baseUrl', '/')
+
+const baseUrl = localStorage.getItem('baseUrl') ?? 'http://127.0.0.1:9431'
 
 // 创建axios实例
 const request = axios.create({
-    baseURL: 'http://127.0.0.1:9431',
+    baseURL: baseUrl,
     timeout: 60 * 1000,
     params: {}
 });

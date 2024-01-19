@@ -1,5 +1,6 @@
 import type {Response} from "@/lib/request";
 import req from "@/lib/request";
+
 import type {
     BaiduConfig,
     ChatGPTConfig,
@@ -50,6 +51,7 @@ export const getConfigList = () => {
         method: 'GET'
     })
 }
+
 
 export const getRequestRecord = (
     params: {page: number, size: number} = {page: 1, size: 10}

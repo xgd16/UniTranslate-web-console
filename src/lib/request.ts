@@ -2,9 +2,8 @@ import type {AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequest
 import axios from 'axios'
 import {ElMessage} from "element-plus";
 import Router from "@/router";
-import { isJSON } from './common';
+import { isJSON, AuthEncrypt } from './common';
 
-let baseKey = ''
 
 // 创建axios实例
 const request = axios.create({
@@ -12,8 +11,9 @@ const request = axios.create({
     timeout: 60 * 1000,
     params: {}
 });
+
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
-    config.params['key'] = localStorage.getItem('key')
+    config.headers['auth_key'] = AuthEncrypt(localStorage.getItem("key") ?? '', config.data)
     // 在发送请求之前做些什么
     return config;
 }, function (error: any) {
@@ -33,7 +33,7 @@ request.interceptors.response.use(function (response: AxiosResponse) {
     return response;
 }, function (error: AxiosError<{code: number, msg: string, time: number}>) {
     let data = error.response?.data ?? {code: 1001, msg: '发起请求失败', time: Date.now()}
-    console.log('请求出错', error.response)
+    console.log('请求出错', error)
     let isJson: boolean = isJSON(data)
     if (data && !isJson && error.response?.status == 404) {
         ElMessage.error(data.msg ?? '操作出错')

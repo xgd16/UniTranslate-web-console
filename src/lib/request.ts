@@ -10,12 +10,12 @@ const baseUrl = localStorage.getItem('baseUrl') ?? 'http://127.0.0.1:9431'
 
 // 创建axios实例
 const request = axios.create({
-    baseURL: baseUrl,
     timeout: 60 * 1000,
     params: {}
 });
 
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
+    config.baseURL = localStorage.getItem('baseUrl') ?? baseUrl
     config.headers['auth_key'] = AuthEncrypt(localStorage.getItem("key") ?? '', config.data)
     // 在发送请求之前做些什么
     return config;

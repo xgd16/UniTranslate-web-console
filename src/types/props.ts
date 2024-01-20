@@ -62,7 +62,14 @@ export type XunFeiConfig = {
     secret: string
 }
 
-export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|null> = {
+export type TencentConfig = {
+    url: string
+    region: string,
+    secretId: string,
+    secretKey: string
+}
+
+export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig|null> = {
     platform: string,
     status: boolean,
     level: number,

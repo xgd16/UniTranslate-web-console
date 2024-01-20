@@ -121,6 +121,11 @@ let platformOptions: selectOptionType = [
     value: 'XunFeiNiu',
     label: 'XunFei (niutrans)',
     disabled: false
+  },
+  {
+    value: 'Tencent',
+    label: 'Tencent 腾讯',
+    disabled: false
   }
 ]
 

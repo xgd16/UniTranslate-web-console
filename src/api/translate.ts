@@ -7,6 +7,7 @@ import type {
     ConfigList,
     DeeplConfig,
     GoogleConfig,
+    HuoShanConfig,
     RequestRecord,
     TencentConfig,
     Translate,
@@ -35,7 +36,7 @@ export const addConfigRequest = (
         platform: string,
         status: boolean,
         level: number,
-        cfg: BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig
+        cfg: BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig|HuoShanConfig
         "type": string,
     }
 ) => {

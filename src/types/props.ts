@@ -69,7 +69,12 @@ export type TencentConfig = {
     secretKey: string
 }
 
-export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig|null> = {
+export type HuoShanConfig = {
+    accessKey: string,
+    secretKey: string
+}
+
+export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig|HuoShanConfig|null> = {
     platform: string,
     status: boolean,
     level: number,

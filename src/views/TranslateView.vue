@@ -126,6 +126,11 @@ let platformOptions: selectOptionType = [
     value: 'Tencent',
     label: 'Tencent 腾讯',
     disabled: false
+  },
+  {
+    value: "HuoShan",
+    label: "HuoShan 字节跳动",
+    disabled: false
   }
 ]
 

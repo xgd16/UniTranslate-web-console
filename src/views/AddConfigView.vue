@@ -77,6 +77,14 @@
         <el-input type="text" v-model="chatGPTConfig.key"></el-input>
       </el-form-item>
     </el-row>
+    <el-row v-if="form.typeCfg == 'HuoShan'">
+      <el-form-item label="accessKey" class="el-col-sm-24 p5px">
+        <el-input type="text" v-model="huoShanConfig.accessKey"></el-input>
+      </el-form-item>
+      <el-form-item label="secretKey" class="el-col-sm-24 p5px">
+        <el-input type="text" v-model="huoShanConfig.secretKey"></el-input>
+      </el-form-item>
+    </el-row>
     <el-row v-if="form.typeCfg == 'XunFei' || form.typeCfg == 'XunFeiNiu'">
       <el-form-item label="appId" class="el-col-sm-12 p5px">
         <el-input type="text" v-model="xunFeiConfig.appId"></el-input>
@@ -128,7 +136,7 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig, XunFeiConfig, TencentConfig} from "@/types/props";
+import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig, XunFeiConfig, TencentConfig, HuoShanConfig} from "@/types/props";
 import {ElMessage} from "element-plus";
 import {addConfigRequest, getConfigList} from "@/api/translate";
 
@@ -268,6 +276,11 @@ let platformOptions: selectOptionType = [
     label: 'Tencent (腾讯翻译)',
     disabled: false
   },
+  {
+    value: "HuoShan",
+    label: "HuoShan (字节跳动)",
+    disabled: false
+  }
 ]
 
 // get config list
@@ -285,7 +298,7 @@ const form = reactive<AddConfigForm>({
   status: true,
   level: 1,
   cfg: null,
-  typeCfg: 'Tencent'
+  typeCfg: 'HuoShan'
 })
 
 const baiduConfig = ref<BaiduConfig>({key: '', appId: '', url: 'https://fanyi-api.baidu.com/api/trans/vip/translate', curlTimeOut: 1000})
@@ -295,9 +308,11 @@ const deeplConfig = ref<DeeplConfig>({key: '', url: 'https://api.deepl.com/v2/tr
 const chatGPTConfig = ref<ChatGPTConfig>({key: ''})
 const xunFeiConfig = ref<XunFeiConfig>({appId: '', apiKey: '', secret: ''})
 const tencentConfig = ref<TencentConfig>({url: 'tmt.tencentcloudapi.com', region: 'ap-beijing', secretId: '', secretKey: ''})
+const huoShanConfig = ref<HuoShanConfig>({accessKey: '', secretKey: ''})
 
 const submit = () => {
   // create config data
+  console.log(form.typeCfg)
   switch (form.typeCfg) {
     case 'Baidu':
       form.cfg = baiduConfig.value
@@ -322,6 +337,9 @@ const submit = () => {
       break
     case 'Tencent':
       form.cfg = tencentConfig.value
+      break
+    case 'HuoShan':
+      form.cfg = huoShanConfig.value
       break
     default:
       ElMessage.warning('不支持的平台')

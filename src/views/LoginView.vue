@@ -18,18 +18,24 @@
 import {reactive} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
+import { getSystemInitConfig } from "@/api/system";
+import { useSystemInitConfigStore } from "@/stores/counter";
+
+const systemConfigStore = useSystemInitConfigStore()
+
 
 const form = reactive({
   key: '',
 })
 
-const submit = () => {
+const submit = async () => {
   if (!form.key) {
     ElMessage.warning('Key 不能为空')
     return
   }
-  console.log(form.key)
-  localStorage.clear()
+
+  let systemConfig = await getSystemInitConfig()
+  systemConfigStore.setConfig(systemConfig.data)
   localStorage.setItem('key', form.key)
 
   router.push('/translate')

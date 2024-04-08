@@ -3,8 +3,9 @@ import axios from 'axios'
 import {ElMessage} from "element-plus";
 import Router from "@/router";
 import { isJSON, AuthEncrypt } from './common';
+import { useSystemInitConfigStore } from '@/stores/counter';
 
-localStorage.setItem('baseUrl', '/')
+localStorage.setItem('baseUrl', 'http://127.0.0.1:9431')
 
 const baseUrl = localStorage.getItem('baseUrl') ?? 'http://127.0.0.1:9431'
 
@@ -16,8 +17,12 @@ const request = axios.create({
 
 request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
     config.baseURL = localStorage.getItem('baseUrl') ?? baseUrl
-    config.headers['auth_key'] = AuthEncrypt(localStorage.getItem("key") ?? '', config.data)
-    // 在发送请求之前做些什么
+    const keyStr = localStorage.getItem("key") ?? ''
+    const systemConfig = useSystemInitConfigStore().config
+    // 判断验证方式处理数据
+    config.headers['auth_key'] = systemConfig.authMode == 1
+        ? keyStr
+        : AuthEncrypt(keyStr, config.data)
     return config;
 }, function (error: any) {
     // 对请求错误做些什么

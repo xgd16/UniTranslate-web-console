@@ -1,12 +1,14 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import type { SystemInitConfigResp } from '@/types/props'
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
-
-  return { count, doubleCount, increment }
+export const useSystemInitConfigStore = defineStore('SystemInitConfig', {
+  state: () => ({
+    config: <SystemInitConfigResp>({})
+  }),
+  actions: {
+    setConfig(config: SystemInitConfigResp) {
+      this.config = config
+    }
+  },
+  persist: true
 })

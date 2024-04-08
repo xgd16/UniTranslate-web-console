@@ -109,3 +109,10 @@ export type RequestRecord = {
     count: number,
     list: RequestRecordList[]
 }
+
+/**
+ * 系统初始化配置
+ */
+export type SystemInitConfigResp = {
+    authMode: number
+}

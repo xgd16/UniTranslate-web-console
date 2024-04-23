@@ -1,11 +1,11 @@
 <template>
   <el-table :data="tableData" style="width: 100%" :row-class-name="tableRowClassName">
-    <el-table-column prop="id" label="ID" />
-    <el-table-column prop="tId" label="任务ID" />
+    <el-table-column prop="id" label="ID" width="100" />
+    <el-table-column prop="tId" label="任务ID" width="300" />
     <el-table-column prop="clientIp" label="客户端IP" />
-    <el-table-column prop="statusName" label="状态" />
-    <el-table-column prop="platform" label="翻译类型" />
-    <el-table-column prop="takeTimeViewStr" label="耗时" />
+    <el-table-column prop="statusName" label="状态" width="100" />
+    <el-table-column prop="platform" label="翻译类型" width="250" />
+    <el-table-column prop="takeTimeViewStr" label="耗时" width="110" />
     <el-table-column prop="createTime" label="操作时间" />
     <el-table-column fixed="right" label="操作" width="240">
       <template #default="scope">

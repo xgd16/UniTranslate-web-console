@@ -74,7 +74,14 @@ export type HuoShanConfig = {
     secretKey: string
 }
 
-export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig|HuoShanConfig|null> = {
+export type PaPaGoConfig = {
+    key: string,
+    url: string,
+    keyId: string,
+    curlTimeOut: number,
+}
+
+export type AddConfigForm<T = BaiduConfig|YouDaoConfig|GoogleConfig|DeeplConfig|ChatGPTConfig|XunFeiConfig|TencentConfig|HuoShanConfig|PaPaGoConfig|null> = {
     platform: string,
     status: boolean,
     level: number,

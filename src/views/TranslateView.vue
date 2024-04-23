@@ -131,6 +131,11 @@ let platformOptions: selectOptionType = [
     value: "HuoShan",
     label: "HuoShan 字节跳动",
     disabled: false
+  },
+  {
+    value: "PaPaGo",
+    label: "PaPaGo",
+    disabled: false
   }
 ]
 

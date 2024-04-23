@@ -116,6 +116,20 @@
         <el-input type="text" v-model="tencentConfig.secretKey"></el-input>
       </el-form-item>
     </el-row>
+    <el-row v-if="form.typeCfg == 'PaPaGo'">
+      <el-form-item label="key" class="el-col-sm-24 p5px">
+        <el-input type="text" v-model="paPaGoConfig.key"></el-input>
+      </el-form-item>
+      <el-form-item label="keyId" class="el-col-sm-24 p5px">
+        <el-input type="text" v-model="paPaGoConfig.keyId"></el-input>
+      </el-form-item>
+      <el-form-item label="url" class="el-col-sm-12 p5px">
+        <el-input type="text" v-model="paPaGoConfig.url"></el-input>
+      </el-form-item>
+      <el-form-item label="请求超时: 毫秒" class="el-col-sm-12 p5px">
+        <el-input type="number" v-model="paPaGoConfig.curlTimeOut"></el-input>
+      </el-form-item>
+      </el-row>
     <el-form-item>
       <el-button type="primary" plain @click="submit">提交</el-button>
     </el-form-item>
@@ -136,7 +150,7 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig, XunFeiConfig, TencentConfig, HuoShanConfig} from "@/types/props";
+import type {AddConfigForm, BaiduConfig, ConfigList, DeeplConfig, GoogleConfig, YouDaoConfig, ChatGPTConfig, XunFeiConfig, TencentConfig, HuoShanConfig, PaPaGoConfig} from "@/types/props";
 import {ElMessage} from "element-plus";
 import {addConfigRequest, getConfigList} from "@/api/translate";
 
@@ -280,6 +294,11 @@ let platformOptions: selectOptionType = [
     value: "HuoShan",
     label: "HuoShan (字节跳动)",
     disabled: false
+  },
+  {
+    value: "PaPaGo",
+    label: "PaPaGo",
+    disabled: false
   }
 ]
 
@@ -309,6 +328,7 @@ const chatGPTConfig = ref<ChatGPTConfig>({key: ''})
 const xunFeiConfig = ref<XunFeiConfig>({appId: '', apiKey: '', secret: ''})
 const tencentConfig = ref<TencentConfig>({url: 'tmt.tencentcloudapi.com', region: 'ap-beijing', secretId: '', secretKey: ''})
 const huoShanConfig = ref<HuoShanConfig>({accessKey: '', secretKey: ''})
+const paPaGoConfig = ref<PaPaGoConfig>({key: '', keyId: '', url:"https://naveropenapi.apigw.ntruss.com/nmt/v1/translation", curlTimeOut: 1000})
 
 const submit = () => {
   // create config data
@@ -340,6 +360,9 @@ const submit = () => {
       break
     case 'HuoShan':
       form.cfg = huoShanConfig.value
+      break
+    case 'PaPaGo':
+      form.cfg = paPaGoConfig.value
       break
     default:
       ElMessage.warning('不支持的平台')

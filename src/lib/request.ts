@@ -5,9 +5,12 @@ import Router from "@/router";
 import { isJSON, AuthEncrypt } from './common';
 import { useSystemInitConfigStore } from '@/stores/counter';
 
-localStorage.setItem('baseUrl', 'http://127.0.0.1:9431')
 
-const baseUrl = localStorage.getItem('baseUrl') ?? 'http://127.0.0.1:9431'
+const domain = window.location.origin
+
+localStorage.setItem('baseUrl', domain)
+
+const baseUrl = localStorage.getItem('baseUrl') ?? domain
 
 // 创建axios实例
 const request = axios.create({

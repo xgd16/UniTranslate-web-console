@@ -105,12 +105,12 @@ const errBoduModal = (row: RequestRecordList) => {
 }
 
 const autoRefreshStatus = ref(false) // 自动刷新状态
-const autoRefreshTimer = ref<number>() // 自动刷新定时器
+const autoRefreshTimer = ref<number>(0) // 自动刷新定时器
 const autoRefreshSec = 3 // 自动刷新秒数
 
 // 组件销毁时清除定时器
 onBeforeUnmount(() => {
-  clearInterval(autoRefreshTimer.value)
+  if (autoRefreshTimer.value > 0) clearInterval(autoRefreshTimer.value)
 })
 
 // 监听自动刷新状态
@@ -123,7 +123,7 @@ watch(autoRefreshStatus, (isOpen) => {
     }, autoRefreshSec * 1000)
   } else { 
     ElMessage.success('自动刷新已关闭')
-    clearInterval(autoRefreshTimer.value)
+    if (autoRefreshTimer.value > 0) clearInterval(autoRefreshTimer.value)
   }
 })
 </script>

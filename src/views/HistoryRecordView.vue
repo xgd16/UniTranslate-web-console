@@ -14,7 +14,14 @@
       </template>
     </el-table-column>
   </el-table>
-  <el-pagination background layout="prev, pager, next" @current-change="currChange" :page-size="pageSize" :total="tableTotal" style="margin-top: 10px" />
+  <div class="w-full flex flex-row">
+    <div class="basis-1/2">
+      <el-pagination background layout="prev, pager, next" @current-change="currChange" :page-size="pageSize" :total="tableTotal" style="margin-top: 10px"/>
+    </div>
+    <div class="basis-1/2 inline-block text-right" style="margin-top: 0.51rem;">
+      <el-button @click="autoRefreshStatus = !autoRefreshStatus">{{ autoRefreshStatus ? '停止' : '自动刷新' }}</el-button>
+    </div>
+  </div>
   <el-dialog
       v-model="dialogVisible"
       :title="modalTitle"
@@ -32,9 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {onBeforeUnmount, ref, watch} from "vue";
 import type {RequestRecordList} from "@/types/props";
 import {getRequestRecord} from "@/api/translate";
+import { ElMessage } from "element-plus";
 
 const tableRowClassName = ({
   row,
@@ -95,6 +103,29 @@ const errBoduModal = (row: RequestRecordList) => {
   errDialogVisible.value = true
   errBodyView.value = row.errMsg
 }
+
+const autoRefreshStatus = ref(false) // 自动刷新状态
+const autoRefreshTimer = ref<number>() // 自动刷新定时器
+const autoRefreshSec = 3 // 自动刷新秒数
+
+// 组件销毁时清除定时器
+onBeforeUnmount(() => {
+  clearInterval(autoRefreshTimer.value)
+})
+
+// 监听自动刷新状态
+watch(autoRefreshStatus, (isOpen) => {
+  if (isOpen) {
+    ElMessage.success(`自动刷新已开启-每${autoRefreshSec}秒刷新一次`)
+    getRequestRecordFunc()
+    autoRefreshTimer.value = setInterval(() => {
+      getRequestRecordFunc()
+    }, autoRefreshSec * 1000)
+  } else { 
+    ElMessage.success('自动刷新已关闭')
+    clearInterval(autoRefreshTimer.value)
+  }
+})
 </script>
 
 <style scoped>

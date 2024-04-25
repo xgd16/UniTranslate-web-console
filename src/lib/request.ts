@@ -20,9 +20,11 @@ request.interceptors.request.use(function (config:InternalAxiosRequestConfig) {
     const keyStr = localStorage.getItem("key") ?? ''
     const systemConfig = useSystemInitConfigStore().config
     // 判断验证方式处理数据
-    config.headers['auth_key'] = systemConfig.authMode == 1
-        ? keyStr
-        : AuthEncrypt(keyStr, config.data)
+    if (systemConfig.authMode == 1) {
+        config.params['key'] = keyStr
+    } else { 
+        config.headers['auth_key'] = AuthEncrypt(keyStr, config.data)
+    }
     return config;
 }, function (error: any) {
     // 对请求错误做些什么

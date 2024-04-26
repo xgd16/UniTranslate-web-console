@@ -59,7 +59,7 @@ const menu = ref<MenuList[]>([
 
 <style scoped>
   #app-view-body {
-    padding: 50px 10% 0 10%;
+    padding: 50px 1% 0 1%;
     overflow-y: auto;
     height: calc(100vh - 35px - 5px * 2);
   }

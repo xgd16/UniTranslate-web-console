@@ -21,3 +21,19 @@ export const refreshConfigCache = () => {
     method: "GET",
   });
 };
+
+export const delConfig = (serialNumber: string) => {
+  return req<Response<string>>({
+    url: "/api/delConfig",
+    method: "POST",
+    data: { serialNumber },
+  });
+};
+
+export const updateStatus = (serialNumber: string, status: number) => {
+  return req<Response<string>>({
+    url: "/api/updateStatus",
+    method: "POST",
+    data: { serialNumber, status },
+  });
+};

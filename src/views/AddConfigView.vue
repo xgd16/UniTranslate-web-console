@@ -1,6 +1,6 @@
 <template>
   <el-form
-    class="el-col-12"
+    class="el-col-8"
     label-width="120px"
     label-position="top"
     style="padding: 0 10px"
@@ -147,7 +147,7 @@
   </el-form>
   <el-table
     :data="tableListArr"
-    class="el-col-12"
+    class="el-col-16"
     style="
       padding: 0 10px;
       max-height: 78vh;
@@ -155,16 +155,37 @@
       overflow-y: auto;
     "
   >
-    <el-table-column prop="id" label="ID" />
-    <el-table-column prop="level" label="等级权重" />
-    <el-table-column prop="platform" label="名称" />
-    <el-table-column prop="status" label="状态" />
-    <el-table-column prop="type" label="平台" />
-    <!--    <el-table-column fixed="right" label="操作" width="60">-->
-    <!--      <template #default>-->
-    <!--        <el-button link type="primary" size="small" @click="">删除</el-button>-->
-    <!--      </template>-->
-    <!--    </el-table-column>-->
+    <el-table-column prop="id" label="ID" align="center" width="290" />
+    <el-table-column prop="level" label="等级权重" align="center" />
+    <el-table-column prop="platform" label="名称" align="center" />
+    <el-table-column prop="status" label="状态" align="center"
+      ><template #default="scope">{{
+        scope.row.status ? "启用" : "禁用"
+      }}</template></el-table-column
+    >
+    <el-table-column prop="type" label="平台" align="center" />
+    <el-table-column label="操作" align="center">
+      <template #default="scope">
+        <el-button-group>
+          <el-button
+            type="primary"
+            size="small"
+            @click="
+              updateStatusEvent(scope.row.id, scope.row.status == 1 ? 0 : 1)
+            "
+            plain
+            >{{ scope.row.status ? "禁用" : "启用" }}</el-button
+          >
+          <el-button
+            type="danger"
+            size="small"
+            @click="delConfigEvent(scope.row.id)"
+            plain
+            >删除</el-button
+          >
+        </el-button-group>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
@@ -185,7 +206,7 @@ import type {
 } from "@/types/props";
 import { ElMessage } from "element-plus";
 import { addConfigRequest, getConfigList } from "@/api/translate";
-import { refreshConfigCache } from "@/api/system";
+import { delConfig, refreshConfigCache, updateStatus } from "@/api/system";
 
 const refreshConfigCacheEvent = () => {
   refreshConfigCache()
@@ -195,6 +216,30 @@ const refreshConfigCacheEvent = () => {
     })
     .catch((err) => {
       ElMessage.error("刷新失败");
+    });
+};
+
+const delConfigEvent = (serialNumber: string) => {
+  delConfig(serialNumber)
+    .then((res) => {
+      if (res.code != 1000) return;
+      ElMessage.success("删除成功");
+      refreshTableListArr();
+    })
+    .catch((err) => {
+      ElMessage.error("删除失败");
+    });
+};
+
+const updateStatusEvent = (serialNumber: string, status: number) => {
+  updateStatus(serialNumber, status)
+    .then((res) => {
+      if (res.code != 1000) return;
+      ElMessage.success("更新成功");
+      refreshTableListArr();
+    })
+    .catch((err) => {
+      ElMessage.error("更新失败");
     });
 };
 

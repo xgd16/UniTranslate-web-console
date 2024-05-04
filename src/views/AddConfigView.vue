@@ -157,14 +157,35 @@
   >
     <el-table-column prop="id" label="ID" align="center" width="290" />
     <el-table-column prop="level" label="等级权重" align="center" />
-    <el-table-column prop="platform" label="名称" align="center" />
+    <el-table-column prop="platform" label="名称" align="center" width="170" />
     <el-table-column prop="status" label="状态" align="center"
-      ><template #default="scope">{{
-        scope.row.status ? "启用" : "禁用"
-      }}</template></el-table-column
+      ><template #default="scope">
+        <span v-if="scope.row.status" class="text-green-400">启用</span>
+        <span v-else class="text-red-400">禁用</span>
+      </template></el-table-column
     >
-    <el-table-column prop="type" label="平台" align="center" />
-    <el-table-column label="操作" align="center">
+    <el-table-column prop="type" label="平台" align="center" width="120" />
+    <el-table-column label="成功次数" align="center" width="100"
+      ><template #default="scope"
+        ><span class="text-green-400">{{
+          scope.row.countRecord.successCount
+        }}</span></template
+      ></el-table-column
+    >
+    <el-table-column label="失败次数" align="center" width="100"
+      ><template #default="scope"
+        ><span class="text-red-400">{{
+          scope.row.countRecord.errorCount
+        }}</span></template
+      ></el-table-column
+    >
+    <el-table-column
+      prop="countRecord.charCount"
+      label="翻译字数"
+      align="center"
+      width="100"
+    />
+    <el-table-column label="操作" align="center" width="120">
       <template #default="scope">
         <el-button-group>
           <el-button

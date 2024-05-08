@@ -37,3 +37,21 @@ export const updateStatus = (serialNumber: string, status: number) => {
     data: { serialNumber, status },
   });
 };
+
+export interface CacheSize {
+  size: number;
+}
+
+export const cleanCache = () => {
+  return req<Response<CacheSize>>({
+    url: "/api/cleanCache",
+    method: "GET",
+  });
+};
+
+export const cacheSize = () => {
+  return req<Response<CacheSize>>({
+    url: "/api/cacheSize",
+    method: "GET",
+  });
+};

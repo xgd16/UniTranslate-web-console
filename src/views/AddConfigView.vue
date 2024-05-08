@@ -139,10 +139,30 @@
       </el-form-item>
     </el-row>
     <el-form-item>
-      <el-button type="primary" plain @click="submit">提交</el-button>
-      <el-button type="success" plain @click="refreshConfigCacheEvent"
-        >刷新缓存</el-button
+      <el-button type="primary" size="small" plain @click="submit"
+        >提交</el-button
       >
+      <el-button
+        type="success"
+        size="small"
+        plain
+        @click="refreshConfigCacheEvent"
+        >刷新配置缓存</el-button
+      >
+      <el-popconfirm
+        title="请谨慎操作是否确定要删除翻译缓存"
+        @confirm="cleanCacheEvent"
+        confirm-button-text="确定"
+        cancel-button-text="取消"
+      >
+        <template #reference>
+          <el-button type="danger" size="small" plain
+            >删除翻译缓存 [
+            {{ cacheSizeNumber === null ? "未获取" : cacheSizeNumber }}
+            ]</el-button
+          >
+        </template>
+      </el-popconfirm>
     </el-form-item>
   </el-form>
   <el-table
@@ -211,7 +231,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import type {
   AddConfigForm,
   BaiduConfig,
@@ -227,7 +247,43 @@ import type {
 } from "@/types/props";
 import { ElMessage } from "element-plus";
 import { addConfigRequest, getConfigList } from "@/api/translate";
-import { delConfig, refreshConfigCache, updateStatus } from "@/api/system";
+import {
+  delConfig,
+  refreshConfigCache,
+  updateStatus,
+  cleanCache,
+  cacheSize,
+} from "@/api/system";
+
+const cacheSizeNumber = ref<number | null>(null);
+
+const ViewCacheSize = () => {
+  cacheSize()
+    .then((res) => {
+      if (res.code != 1000) return;
+      console.log(res.data.size);
+      cacheSizeNumber.value = res.data.size;
+    })
+    .catch((err) => {
+      ElMessage.error("获取缓存大小失败");
+    });
+};
+
+onMounted(() => {
+  ViewCacheSize();
+});
+
+const cleanCacheEvent = () => {
+  cleanCache()
+    .then((res) => {
+      if (res.code != 1000) return;
+      ElMessage.success(`成功清除 ${res.data.size} 条缓存`);
+      ViewCacheSize();
+    })
+    .catch((err) => {
+      ElMessage.error("清除翻译缓存失败");
+    });
+};
 
 const refreshConfigCacheEvent = () => {
   refreshConfigCache()

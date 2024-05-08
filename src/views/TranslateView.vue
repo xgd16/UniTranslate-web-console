@@ -65,10 +65,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { langArr, langMap } from "@/lib/common";
 import { translateRequest } from "@/api/translate";
 import { ElMessage } from "element-plus";
+import { useTranslateStore } from "@/stores/counter";
 
 const loading = ref(false);
 
@@ -159,7 +160,19 @@ const form = reactive({
   toLang: "en",
   text: "",
   platform: "",
-  batch: false,
+});
+
+const transalteStore = useTranslateStore();
+
+watch(form, (value) => {
+  transalteStore.config = value;
+});
+
+onMounted(() => {
+  form.fromLang = transalteStore.config.fromLang;
+  form.toLang = transalteStore.config.toLang;
+  form.platform = transalteStore.config.platform;
+  form.text = transalteStore.config.text;
 });
 
 const translateBody = ref();

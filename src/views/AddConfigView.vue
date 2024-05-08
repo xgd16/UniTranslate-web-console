@@ -81,8 +81,18 @@
       </el-form-item>
     </el-row>
     <el-row v-if="form.typeCfg == 'ChatGPT'">
-      <el-form-item label="Key" class="el-col-sm-24 p5px">
+      <el-form-item label="Key" class="el-col-sm-12 p5px">
         <el-input type="text" v-model="chatGPTConfig.key"></el-input>
+      </el-form-item>
+      <el-form-item label="Model" class="el-col-sm-12 p5px">
+        <el-select
+          v-model="chatGPTConfig.model"
+          placeholder="please select your zone"
+        >
+          <el-option label="gpt-3.5-turbo-0125" value="gpt-3.5-turbo-0125" />
+          <el-option label="gpt-4-turbo" value="gpt-4-turbo" />
+          <el-option label="gpt-3.5-turbo" value="gpt-3.5-turbo" />
+        </el-select>
       </el-form-item>
     </el-row>
     <el-row v-if="form.typeCfg == 'HuoShan'">
@@ -261,7 +271,6 @@ const ViewCacheSize = () => {
   cacheSize()
     .then((res) => {
       if (res.code != 1000) return;
-      console.log(res.data.size);
       cacheSizeNumber.value = res.data.size;
     })
     .catch((err) => {
@@ -482,7 +491,7 @@ const form = reactive<AddConfigForm>({
   status: true,
   level: 1,
   cfg: null,
-  typeCfg: "HuoShan",
+  typeCfg: "Google",
 });
 
 const baiduConfig = ref<BaiduConfig>({
@@ -507,7 +516,10 @@ const deeplConfig = ref<DeeplConfig>({
   url: "https://api.deepl.com/v2/translate",
   curlTimeOut: 1000,
 });
-const chatGPTConfig = ref<ChatGPTConfig>({ key: "" });
+const chatGPTConfig = ref<ChatGPTConfig>({
+  key: "",
+  model: "gpt-3.5-turbo-0125",
+});
 const xunFeiConfig = ref<XunFeiConfig>({ appId: "", apiKey: "", secret: "" });
 const tencentConfig = ref<TencentConfig>({
   url: "tmt.tencentcloudapi.com",

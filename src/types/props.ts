@@ -53,6 +53,7 @@ export type DeeplConfig = {
 
 export type ChatGPTConfig = {
   key: string;
+  model: string;
 };
 
 export type XunFeiConfig = {

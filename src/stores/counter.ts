@@ -1,14 +1,30 @@
-import { defineStore } from 'pinia'
-import type { SystemInitConfigResp } from '@/types/props'
+import { defineStore } from "pinia";
+import type { SystemInitConfigResp } from "@/types/props";
 
-export const useSystemInitConfigStore = defineStore('SystemInitConfig', {
+export const useSystemInitConfigStore = defineStore("SystemInitConfig", {
   state: () => ({
-    config: <SystemInitConfigResp>({})
+    config: <SystemInitConfigResp>{},
   }),
   actions: {
     setConfig(config: SystemInitConfigResp) {
-      this.config = config
-    }
+      this.config = config;
+    },
   },
-  persist: true
-})
+  persist: true,
+});
+
+// TranslateCacheData 用于存储翻译选项缓存数据
+export interface TranslateCacheData {
+  fromLang: string;
+  toLang: string;
+  platform: string;
+  text: string;
+}
+
+// useTranslateStore 用于存储翻译选项数据
+export const useTranslateStore = defineStore("Translate", {
+  state: () => ({
+    config: <TranslateCacheData>{},
+  }),
+  persist: true,
+});

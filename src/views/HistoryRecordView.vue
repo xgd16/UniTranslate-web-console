@@ -137,7 +137,6 @@ const errBodyView = ref("");
 const getRequestRecordFunc = (page: number = 1, size: number = pageSize) => {
   getRequestRecord({ page: page, size: size }).then((res) => {
     if (res.code != 1000) return;
-    console.log(res);
     tableTotal.value = res.data.count;
     res.data.list.forEach((value: RequestRecordList) => {
       const jsonData = JSON.parse(value.body);

@@ -24,7 +24,12 @@ export interface TranslateCacheData {
 // useTranslateStore 用于存储翻译选项数据
 export const useTranslateStore = defineStore("Translate", {
   state: () => ({
-    config: <TranslateCacheData>{},
+    config: <TranslateCacheData>{
+      fromLang: "",
+      toLang: "en",
+      platform: "Google",
+      text: "",
+    },
   }),
   persist: true,
 });

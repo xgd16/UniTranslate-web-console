@@ -7,7 +7,7 @@
           <el-input v-model="form.key" placeholder="Please enter key..." />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" plain @click="submit" style="margin: 0 auto">登陆</el-button>
+          <el-button type="primary" plain @click="submit" style="margin: 0 auto">登录</el-button>
         </el-form-item>
       </form>
     </div>

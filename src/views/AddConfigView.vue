@@ -30,124 +30,27 @@
         />
       </el-form-item>
     </el-row>
-    <el-row v-if="form.typeCfg == 'Baidu'">
-      <el-form-item label="Key" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="baiduConfig.key"></el-input>
-      </el-form-item>
-      <el-form-item label="AppId" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="baiduConfig.appId"></el-input>
-      </el-form-item>
-      <el-form-item label="Url" class="el-col-sm-16 p5px">
-        <el-input type="text" v-model="baiduConfig.url"></el-input>
-      </el-form-item>
-      <el-form-item label="请求超时: 毫秒" class="el-col-sm-8 p5px">
-        <el-input type="number" v-model="baiduConfig.curlTimeOut"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'YouDao'">
-      <el-form-item label="AppKey" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="youDaoConfig.appKey"></el-input>
-      </el-form-item>
-      <el-form-item label="SecKey" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="youDaoConfig.secKey"></el-input>
-      </el-form-item>
-      <el-form-item label="Url" class="el-col-sm-16 p5px">
-        <el-input type="text" v-model="youDaoConfig.url"></el-input>
-      </el-form-item>
-      <el-form-item label="请求超时: 毫秒" class="el-col-sm-8 p5px">
-        <el-input type="number" v-model="youDaoConfig.curlTimeOut"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'Google'">
-      <el-form-item label="Key" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="googleConfig.key"></el-input>
-      </el-form-item>
-      <el-form-item label="Url" class="el-col-sm-16 p5px">
-        <el-input type="text" v-model="googleConfig.url"></el-input>
-      </el-form-item>
-      <el-form-item label="请求超时: 毫秒" class="el-col-sm-8 p5px">
-        <el-input type="number" v-model="googleConfig.curlTimeOut"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'Deepl'">
-      <el-form-item label="Key" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="deeplConfig.key"></el-input>
-      </el-form-item>
-      <el-form-item label="Url" class="el-col-sm-16 p5px">
-        <el-input type="text" v-model="deeplConfig.url"></el-input>
-      </el-form-item>
-      <el-form-item label="请求超时: 毫秒" class="el-col-sm-8 p5px">
-        <el-input type="number" v-model="deeplConfig.curlTimeOut"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'ChatGPT'">
-      <el-form-item label="Key" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="chatGPTConfig.key"></el-input>
-      </el-form-item>
-      <el-form-item label="Model" class="el-col-sm-12 p5px">
-        <el-select
-          v-model="chatGPTConfig.model"
-          placeholder="please select your zone"
-        >
-          <el-option label="gpt-3.5-turbo-0125" value="gpt-3.5-turbo-0125" />
-          <el-option label="gpt-4-turbo" value="gpt-4-turbo" />
-          <el-option label="gpt-3.5-turbo" value="gpt-3.5-turbo" />
-        </el-select>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'HuoShan'">
-      <el-form-item label="accessKey" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="huoShanConfig.accessKey"></el-input>
-      </el-form-item>
-      <el-form-item label="secretKey" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="huoShanConfig.secretKey"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'XunFei' || form.typeCfg == 'XunFeiNiu'">
-      <el-form-item label="appId" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="xunFeiConfig.appId"></el-input>
-      </el-form-item>
-      <el-form-item label="ApiKey" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="xunFeiConfig.apiKey"></el-input>
-      </el-form-item>
-      <el-form-item label="Secret" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="xunFeiConfig.secret"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'Tencent'">
-      <el-form-item label="url" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="tencentConfig.url"></el-input>
-      </el-form-item>
-      <el-form-item label="region (地区)" class="el-col-sm-12 p5px">
-        <el-select-v2
-          v-model="tencentConfig.region"
-          filterable
-          :options="tencentRegionOptions"
-          placeholder="Please select"
-          style="width: 240px; margin-right: 16px; vertical-align: middle"
-        />
-      </el-form-item>
-      <el-form-item label="secretId" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="tencentConfig.secretId"></el-input>
-      </el-form-item>
-      <el-form-item label="secretKey" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="tencentConfig.secretKey"></el-input>
-      </el-form-item>
-    </el-row>
-    <el-row v-if="form.typeCfg == 'PaPaGo'">
-      <el-form-item label="key" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="paPaGoConfig.key"></el-input>
-      </el-form-item>
-      <el-form-item label="keyId" class="el-col-sm-24 p5px">
-        <el-input type="text" v-model="paPaGoConfig.keyId"></el-input>
-      </el-form-item>
-      <el-form-item label="url" class="el-col-sm-12 p5px">
-        <el-input type="text" v-model="paPaGoConfig.url"></el-input>
-      </el-form-item>
-      <el-form-item label="请求超时: 毫秒" class="el-col-sm-12 p5px">
-        <el-input type="number" v-model="paPaGoConfig.curlTimeOut"></el-input>
-      </el-form-item>
-    </el-row>
+    <BaiduConfigView v-if="form.typeCfg == 'Baidu'" :config="baiduConfig" />
+    <YouDaoConfigView v-if="form.typeCfg == 'YouDao'" :config="youDaoConfig" />
+    <GoogleConfigView :config="googleConfig" v-if="form.typeCfg == 'Google'" />
+    <DeeplConfigView :config="deeplConfig" v-if="form.typeCfg == 'Deepl'" />
+    <ChatGPTConfigView
+      :config="chatGPTConfig"
+      v-if="form.typeCfg == 'ChatGPT'"
+    />
+    <XunFeiConfigView
+      :config="xunFeiConfig"
+      v-if="form.typeCfg == 'XunFei' || form.typeCfg == 'XunFeiNiu'"
+    />
+    <HuoShanConfigView
+      :config="huoShanConfig"
+      v-if="form.typeCfg == 'HuoShan'"
+    />
+    <TencentConfigView
+      :config="tencentConfig"
+      v-if="form.typeCfg == 'Tencent'"
+    />
+    <PaPaGoConfigView :config="paPaGoConfig" v-if="form.typeCfg == 'PaPaGo'" />
     <el-form-item>
       <el-button type="primary" size="small" plain @click="submit"
         >提交</el-button
@@ -241,6 +144,15 @@
 </template>
 
 <script setup lang="ts">
+import PaPaGoConfigView from "@/components/addConfig/PaPaGoConfigView.vue";
+import TencentConfigView from "@/components/addConfig/TencentConfigView.vue";
+import HuoShanConfigView from "@/components/addConfig/HuoShanConfigView.vue";
+import XunFeiConfigView from "@/components/addConfig/XunFeiConfigView.vue";
+import ChatGPTConfigView from "@/components/addConfig/ChatGPTConfigView.vue";
+import DeeplConfigView from "@/components/addConfig/DeeplConfigView.vue";
+import GoogleConfigView from "@/components/addConfig/GoogleConfigView.vue";
+import YouDaoConfigView from "@/components/addConfig/YouDaoConfigView.vue";
+import BaiduConfigView from "@/components/addConfig/BaiduConfigView.vue";
 import { onMounted, reactive, ref } from "vue";
 import type {
   AddConfigForm,
@@ -334,94 +246,6 @@ type selectOptionType = {
   label: string;
   disabled: boolean;
 }[];
-
-let tencentRegionOptions: selectOptionType = [
-  {
-    value: "ap-bangkok",
-    label: "亚太东南（曼谷）",
-    disabled: false,
-  },
-  {
-    value: "ap-beijing",
-    label: "华北地区（北京）",
-    disabled: false,
-  },
-  {
-    value: "ap-chengdu",
-    label: "西南地区（成都）",
-    disabled: false,
-  },
-  {
-    value: "ap-chongqing",
-    label: "西南地区（重庆）",
-    disabled: false,
-  },
-  {
-    value: "ap-guangzhou",
-    label: "华南地区（广州）",
-    disabled: false,
-  },
-  {
-    value: "ap-hongkong",
-    label: "港澳台地区（中国香港）",
-    disabled: false,
-  },
-  {
-    value: "ap-mumbai",
-    label: "亚太南部（孟买）",
-    disabled: false,
-  },
-  {
-    value: "ap-seoul",
-    label: "亚太东北（首尔）",
-    disabled: false,
-  },
-  {
-    value: "ap-shanghai",
-    label: "华东地区（上海）",
-    disabled: false,
-  },
-  {
-    value: "ap-shanghai-fsi",
-    label: "华东地区（上海金融）",
-    disabled: false,
-  },
-  {
-    value: "ap-shenzhen-fsi",
-    label: "华南地区（深圳金融）",
-    disabled: false,
-  },
-  {
-    value: "ap-singapore",
-    label: "亚太东南（新加坡）",
-    disabled: false,
-  },
-  {
-    value: "ap-tokyo",
-    label: "亚太东北（东京）",
-    disabled: false,
-  },
-  {
-    value: "eu-frankfurt",
-    label: "欧洲地区（法兰克福）",
-    disabled: false,
-  },
-  {
-    value: "na-ashburn",
-    label: "美国东部（弗吉尼亚）",
-    disabled: false,
-  },
-  {
-    value: "na-siliconvalley",
-    label: "美国西部（硅谷）",
-    disabled: false,
-  },
-  {
-    value: "na-toronto",
-    label: "北美地区（多伦多）",
-    disabled: false,
-  },
-];
 
 let platformOptions: selectOptionType = [
   {
@@ -536,8 +360,6 @@ const paPaGoConfig = ref<PaPaGoConfig>({
 });
 
 const submit = () => {
-  // create config data
-  console.log(form.typeCfg);
   switch (form.typeCfg) {
     case "Baidu":
       form.cfg = baiduConfig.value;

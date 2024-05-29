@@ -74,3 +74,10 @@ export const getRequestRecord = (
     params,
   });
 };
+
+export const getLangList = () => {
+    return req<Response<{[key:string]: string}>>({
+      url: '/api/getLangList',
+      method: 'GET'
+    })
+}

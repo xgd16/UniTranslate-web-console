@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { SystemInitConfigResp } from "@/types/props";
+import { getLangList } from "@/api/translate";
 
 export const useSystemInitConfigStore = defineStore("SystemInitConfig", {
   state: () => ({
@@ -31,5 +32,19 @@ export const useTranslateStore = defineStore("Translate", {
       text: "",
     },
   }),
+  persist: true,
+});
+
+export const useLangListStore = defineStore("langList", {
+  state: () => ({
+    list: <{ [key: string]: string }>{},
+  }),
+  actions: {
+    initLangList() {
+      getLangList().then((res) => {
+        this.list = res.data;
+      });
+    },
+  },
   persist: true,
 });

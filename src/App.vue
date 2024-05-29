@@ -32,6 +32,7 @@
 import { RouterView, useRoute, useRouter } from "vue-router";
 
 import { ref, onMounted } from "vue";
+import { useLangListStore } from "./stores/counter";
 
 const route = useRoute();
 const router = useRouter();
@@ -47,6 +48,8 @@ onMounted(() => {
   router.afterEach((to, from) => {
     currentRoute.value = to.path;
   });
+
+  useLangListStore().initLangList();
 });
 
 const menu = ref<MenuList[]>([

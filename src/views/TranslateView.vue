@@ -66,10 +66,9 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from "vue";
-import { langArr, langMap } from "@/lib/common";
-import { translateRequest } from "@/api/translate";
+import { getLangList, translateRequest } from "@/api/translate";
 import { ElMessage } from "element-plus";
-import { useTranslateStore } from "@/stores/counter";
+import { useLangListStore, useTranslateStore } from "@/stores/counter";
 
 const loading = ref(false);
 
@@ -80,17 +79,27 @@ type selectOptionType = {
 }[];
 
 let options: selectOptionType = [];
+let fromOptions: selectOptionType = [];
 
-for (const k in langArr) {
-  const item = langArr[k];
-  options.push({
-    value: item,
-    label: `${item} ${langMap[item]}`,
+const langListStore = useLangListStore();
+
+onMounted(() => {
+  form.fromLang = transalteStore.config.fromLang;
+  form.toLang = transalteStore.config.toLang;
+  form.platform = transalteStore.config.platform;
+  form.text = transalteStore.config.text;
+});
+
+for (const k in langListStore.list) {
+  const item = {
+    value: k,
+    label: `${k} ${langListStore.list[k]}`,
     disabled: false,
-  });
+  };
+  options.push(item);
+  fromOptions.push(item);
 }
 
-let fromOptions: selectOptionType = [...options];
 fromOptions.unshift({
   value: "auto",
   label: "auto 自动识别",
@@ -168,13 +177,6 @@ watch(form, (value) => {
   transalteStore.config = value;
 });
 
-onMounted(() => {
-  form.fromLang = transalteStore.config.fromLang;
-  form.toLang = transalteStore.config.toLang;
-  form.platform = transalteStore.config.platform;
-  form.text = transalteStore.config.text;
-});
-
 const translateBody = ref();
 
 const submitTranslate = () => {
@@ -192,7 +194,7 @@ const submitTranslate = () => {
     .then((res) => {
       loading.value = false;
       if (res.code != 1000) return;
-      translateBody.value = JSON.stringify(res.data, null, 2);
+      translateBody.value = JSON.stringify(res.data, null, 4);
     })
     .catch(() => {
       loading.value = false;

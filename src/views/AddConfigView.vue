@@ -5,6 +5,7 @@
     label-position="top"
     style="padding: 0 10px"
   >
+    <h1 class="text-4xl mb-3">{{ viewSaveMode }}</h1>
     <el-row>
       <el-form-item label="名称" class="el-col-sm-12 p5px">
         <el-input type="text" v-model="form.platform"></el-input>
@@ -76,6 +77,9 @@
           >
         </template>
       </el-popconfirm>
+      <el-button type="info" size="small" @click="reloadView" plain
+        >重置</el-button
+      >
     </el-form-item>
   </el-form>
   <el-table
@@ -118,7 +122,12 @@
       align="center"
       width="100"
     />
-    <el-table-column label="操作" align="center" width="120">
+    <el-table-column
+      label="操作"
+      align="center"
+      width="180"
+      v-if="systemConfig.editConfig"
+    >
       <template #default="scope">
         <el-button-group>
           <el-button
@@ -129,6 +138,13 @@
             "
             plain
             >{{ scope.row.status ? "禁用" : "启用" }}</el-button
+          >
+          <el-button
+            type="info"
+            size="small"
+            @click="updateConfig(scope.row.id)"
+            plain
+            >编辑</el-button
           >
           <el-button
             type="danger"
@@ -153,7 +169,7 @@ import DeeplConfigView from "@/components/addConfig/DeeplConfigView.vue";
 import GoogleConfigView from "@/components/addConfig/GoogleConfigView.vue";
 import YouDaoConfigView from "@/components/addConfig/YouDaoConfigView.vue";
 import BaiduConfigView from "@/components/addConfig/BaiduConfigView.vue";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import type {
   AddConfigForm,
   BaiduConfig,
@@ -176,8 +192,18 @@ import {
   cleanCache,
   cacheSize,
 } from "@/api/system";
+import { useSystemInitConfigStore } from "@/stores/counter";
+
+const systemInitConfigStore = useSystemInitConfigStore();
+const systemConfig = systemInitConfigStore.config;
 
 const cacheSizeNumber = ref<number | null>(null);
+const viewSaveMode = ref<string>("添加");
+const updateSerialNumber = ref<string>("");
+
+watch(updateSerialNumber, (newVal) => {
+  newVal ? (viewSaveMode.value = "修改") : (viewSaveMode.value = "添加");
+});
 
 const ViewCacheSize = () => {
   cacheSize()
@@ -188,6 +214,24 @@ const ViewCacheSize = () => {
     .catch((err) => {
       ElMessage.error("获取缓存大小失败");
     });
+};
+
+const reloadView = () => {
+  window.location.reload();
+};
+
+const updateConfig = (serialNumber: string) => {
+  const config = configMap.value.get(serialNumber);
+  if (!config) {
+    ElMessage.error("未找到配置");
+    return;
+  }
+  updateSerialNumber.value = serialNumber;
+  form.typeCfg = config.type;
+  form.platform = config.platform;
+  form.level = Number(config.level);
+  form.status = Boolean(config.status);
+  form.cfg = config.cfg;
 };
 
 onMounted(() => {
@@ -302,10 +346,14 @@ let platformOptions: selectOptionType = [
 
 // get config list
 const tableListArr = ref<ConfigList[]>([]);
+const configMap = ref<Map<string, ConfigList>>(new Map());
 const refreshTableListArr = () => {
   getConfigList().then((res) => {
     if (res.code != 1000) return;
     tableListArr.value = res.data;
+    res.data.forEach((value, _) => {
+      configMap.value.set(value.id, value);
+    });
   });
 };
 refreshTableListArr();
@@ -359,7 +407,7 @@ const paPaGoConfig = ref<PaPaGoConfig>({
   curlTimeOut: 1000,
 });
 
-const submit = () => {
+const refreshForm = () => {
   switch (form.typeCfg) {
     case "Baidu":
       form.cfg = baiduConfig.value;
@@ -377,8 +425,6 @@ const submit = () => {
       form.cfg = chatGPTConfig.value;
       break;
     case "XunFei":
-      form.cfg = xunFeiConfig.value;
-      break;
     case "XunFeiNiu":
       form.cfg = xunFeiConfig.value;
       break;
@@ -395,6 +441,51 @@ const submit = () => {
       ElMessage.warning("不支持的平台");
       return;
   }
+};
+
+watch(
+  form,
+  (newVal) => {
+    if (!form.cfg) {
+      return;
+    }
+
+    switch (form.typeCfg) {
+      case "Baidu":
+        baiduConfig.value = form.cfg as any;
+        break;
+      case "YouDao":
+        youDaoConfig.value = form.cfg as any;
+        break;
+      case "Google":
+        googleConfig.value = form.cfg as any;
+        break;
+      case "Deepl":
+        deeplConfig.value = form.cfg as any;
+        break;
+      case "ChatGPT":
+        chatGPTConfig.value = form.cfg as any;
+        break;
+      case "XunFei":
+      case "XunFeiNiu":
+        xunFeiConfig.value = form.cfg as any;
+        break;
+      case "Tencent":
+        tencentConfig.value = form.cfg as any;
+        break;
+      case "HuoShan":
+        huoShanConfig.value = form.cfg as any;
+        break;
+      case "PaPaGo":
+        paPaGoConfig.value = form.cfg as any;
+        break;
+    }
+  },
+  { deep: true }
+);
+
+const submit = () => {
+  refreshForm();
   if (!form.cfg) {
     ElMessage.warning("错误的参数配置");
     return;
@@ -405,6 +496,7 @@ const submit = () => {
     status: form.status,
     level: form.level,
     cfg: form.cfg,
+    md5: updateSerialNumber.value,
     type: form.typeCfg,
   }).then((res) => {
     if (res.code != 1000) return;

@@ -39,6 +39,7 @@ export const addConfigRequest = (data: {
   platform: string;
   status: boolean;
   level: number;
+  md5: string;
   cfg:
     | BaiduConfig
     | YouDaoConfig
@@ -51,7 +52,7 @@ export const addConfigRequest = (data: {
   type: string;
 }) => {
   return req<Response<string[]>>({
-    url: "/api/addConfig",
+    url: "/api/saveConfig",
     method: "POST",
     data: data,
   });

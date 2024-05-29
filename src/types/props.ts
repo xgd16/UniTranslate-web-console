@@ -107,6 +107,7 @@ export type ConfigList = {
   platform: string;
   status: number;
   type: string;
+  cfg: any;
 };
 
 export type RequestRecordList = {
@@ -137,4 +138,5 @@ export type RequestRecord = {
  */
 export type SystemInitConfigResp = {
   authMode: number;
+  editConfig: boolean;
 };

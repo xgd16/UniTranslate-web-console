@@ -172,10 +172,10 @@ const form = reactive({
   platform: "",
 });
 
-const transalteStore = useTranslateStore();
+const translateStore = useTranslateStore();
 
 watch(form, (value) => {
-  transalteStore.config = value;
+  translateStore.config = value;
 });
 
 const translateBody = ref();

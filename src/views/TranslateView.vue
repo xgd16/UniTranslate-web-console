@@ -50,6 +50,7 @@
     <textarea
       style="
         background-color: var(--el-color-black);
+        color: #fff;
         resize: none;
         border-radius: 4px;
         border: none;
@@ -65,10 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from "vue";
-import { getLangList, translateRequest } from "@/api/translate";
-import { ElMessage } from "element-plus";
-import { useLangListStore, useTranslateStore } from "@/stores/counter";
+import {onMounted, reactive, ref, watch} from "vue";
+import {translateRequest} from "@/api/translate";
+import {ElMessage} from "element-plus";
+import {useLangListStore, useTranslateStore} from "@/stores/counter";
 
 const loading = ref(false);
 

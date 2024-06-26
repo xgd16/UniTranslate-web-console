@@ -85,10 +85,10 @@ let fromOptions: selectOptionType = [];
 const langListStore = useLangListStore();
 
 onMounted(() => {
-  form.fromLang = transalteStore.config.fromLang;
-  form.toLang = transalteStore.config.toLang;
-  form.platform = transalteStore.config.platform;
-  form.text = transalteStore.config.text;
+  form.fromLang = translateStore.config.fromLang;
+  form.toLang = translateStore.config.toLang;
+  form.platform = translateStore.config.platform;
+  form.text =  translateStore.config.text;
 });
 
 for (const k in langListStore.list) {

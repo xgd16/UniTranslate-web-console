@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
-import type { SystemInitConfigResp } from "@/types/props";
-import { getLangList } from "@/api/translate";
+import {defineStore} from "pinia";
+import type {SystemInitConfigResp} from "@/types/props";
+import {getLangList} from "@/api/translate";
 
 export const useSystemInitConfigStore = defineStore("SystemInitConfig", {
   state: () => ({
@@ -26,9 +26,9 @@ export interface TranslateCacheData {
 export const useTranslateStore = defineStore("Translate", {
   state: () => ({
     config: <TranslateCacheData>{
-      fromLang: "",
+      fromLang: "auto",
       toLang: "en",
-      platform: "Google",
+      platform: "",
       text: "",
     },
   }),

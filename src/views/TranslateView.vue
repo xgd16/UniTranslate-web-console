@@ -34,6 +34,9 @@
           style="width: 240px; margin-right: 16px; vertical-align: middle"
         />
       </el-form-item>
+      <el-form-item label="～" id="translate-btn">
+        <el-button type="primary" plain @click="submitTranslate">翻译</el-button>
+      </el-form-item>
     </el-row>
     <el-form-item label="需要翻译的内容">
       <el-input
@@ -41,9 +44,6 @@
         v-model="form.text"
         :autosize="{ minRows: 30, maxRows: 30 }"
       ></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" plain @click="submitTranslate">翻译</el-button>
     </el-form-item>
   </el-form>
   <div class="el-col-12" style="padding-left: 15px">
@@ -58,8 +58,10 @@
           var(--el-input-border-color, var(--el-border-color)) inset;
         padding: 5px 11px;
         width: 100%;
-        height: 100%;
+        height: calc(100% - 18px);
       "
+      readonly
+      placeholder="翻译结果显示在这里"
       >{{ translateBody }}</textarea
     >
   </div>
@@ -84,12 +86,26 @@ let fromOptions: selectOptionType = [];
 
 const langListStore = useLangListStore();
 
+const form = reactive({
+  fromLang: "auto",
+  toLang: "en",
+  text: "",
+  platform: "",
+});
+
 onMounted(() => {
   form.fromLang = translateStore.config.fromLang;
   form.toLang = translateStore.config.toLang;
   form.platform = translateStore.config.platform;
   form.text =  translateStore.config.text;
 });
+
+watch(form, (value) => {
+  translateStore.config = value;
+});
+
+const translateStore = useTranslateStore();
+const translateBody = ref<string>("");
 
 for (const k in langListStore.list) {
   const item = {
@@ -165,21 +181,6 @@ let platformOptions: selectOptionType = [
   },
 ];
 
-const form = reactive({
-  fromLang: "auto",
-  toLang: "en",
-  text: "",
-  platform: "",
-});
-
-const translateStore = useTranslateStore();
-
-watch(form, (value) => {
-  translateStore.config = value;
-});
-
-const translateBody = ref();
-
 const submitTranslate = () => {
   if (!form.text) {
     ElMessage.warning("请填写需要翻译的内容...");
@@ -203,4 +204,8 @@ const submitTranslate = () => {
 };
 </script>
 
-<style scoped></style>
+<style>
+#translate-btn .el-form-item__label {
+  color: rgba(0,0,0,0)!important;
+}
+</style>

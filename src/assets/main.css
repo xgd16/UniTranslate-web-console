@@ -6,6 +6,7 @@
   display: inline-block;
   background-color: var(--el-color-primary-light-9);
   font-weight: normal;
+  min-width: 1280px;
 }
 
 a,

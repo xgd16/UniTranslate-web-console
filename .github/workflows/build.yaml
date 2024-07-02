@@ -31,3 +31,10 @@ jobs:
         with:
           name: dist
           path: dist.zip
+      - name: Upload dist.zip to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./dist.zip
+          asset_name: dist.zip
+          asset_content_type: application/zip

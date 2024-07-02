@@ -81,6 +81,11 @@ export type PaPaGoConfig = {
   curlTimeOut: number;
 };
 
+export type FreeGoogleConfig = {
+  proxy: string;
+  curlTimeOut: number;
+};
+
 export type AddConfigForm<
   T =
     | BaiduConfig
@@ -92,6 +97,7 @@ export type AddConfigForm<
     | TencentConfig
     | HuoShanConfig
     | PaPaGoConfig
+    | FreeGoogleConfig
     | null
 > = {
   platform: string;

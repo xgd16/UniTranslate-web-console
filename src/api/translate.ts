@@ -6,6 +6,7 @@ import type {
   ChatGPTConfig,
   ConfigList,
   DeeplConfig,
+  FreeGoogleConfig,
   GoogleConfig,
   HuoShanConfig,
   RequestRecord,
@@ -48,7 +49,8 @@ export const addConfigRequest = (data: {
     | ChatGPTConfig
     | XunFeiConfig
     | TencentConfig
-    | HuoShanConfig;
+    | HuoShanConfig
+    | FreeGoogleConfig;
   type: string;
 }) => {
   return req<Response<string[]>>({
@@ -76,8 +78,8 @@ export const getRequestRecord = (
 };
 
 export const getLangList = () => {
-    return req<Response<{[key:string]: string}>>({
-      url: '/api/getLangList',
-      method: 'GET'
-    })
-}
+  return req<Response<{ [key: string]: string }>>({
+    url: "/api/getLangList",
+    method: "GET",
+  });
+};

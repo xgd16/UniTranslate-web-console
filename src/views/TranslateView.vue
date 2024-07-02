@@ -35,7 +35,9 @@
         />
       </el-form-item>
       <el-form-item label="～" id="translate-btn">
-        <el-button type="primary" plain @click="submitTranslate">翻译</el-button>
+        <el-button type="primary" plain @click="submitTranslate"
+          >翻译</el-button
+        >
       </el-form-item>
     </el-row>
     <el-form-item label="需要翻译的内容">
@@ -68,10 +70,10 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, ref, watch} from "vue";
-import {translateRequest} from "@/api/translate";
-import {ElMessage} from "element-plus";
-import {useLangListStore, useTranslateStore} from "@/stores/counter";
+import { onMounted, reactive, ref, watch } from "vue";
+import { translateRequest } from "@/api/translate";
+import { ElMessage } from "element-plus";
+import { useLangListStore, useTranslateStore } from "@/stores/counter";
 
 const loading = ref(false);
 
@@ -97,7 +99,7 @@ onMounted(() => {
   form.fromLang = translateStore.config.fromLang;
   form.toLang = translateStore.config.toLang;
   form.platform = translateStore.config.platform;
-  form.text =  translateStore.config.text;
+  form.text = translateStore.config.text;
 });
 
 watch(form, (value) => {
@@ -127,6 +129,11 @@ let platformOptions: selectOptionType = [
   {
     value: "",
     label: "auto 自动",
+    disabled: false,
+  },
+  {
+    value: "FreeGoogle",
+    label: "FreeGoogle 免费谷歌",
     disabled: false,
   },
   {
@@ -206,6 +213,6 @@ const submitTranslate = () => {
 
 <style>
 #translate-btn .el-form-item__label {
-  color: rgba(0,0,0,0)!important;
+  color: rgba(0, 0, 0, 0) !important;
 }
 </style>

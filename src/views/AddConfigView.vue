@@ -52,6 +52,10 @@
       v-if="form.typeCfg == 'Tencent'"
     />
     <PaPaGoConfigView :config="paPaGoConfig" v-if="form.typeCfg == 'PaPaGo'" />
+    <FreeGoogleConfigView
+      :config="freeGoogleConfig"
+      v-if="form.typeCfg == 'FreeGoogle'"
+    />
     <el-form-item>
       <el-button type="primary" size="small" plain @click="submit"
         >提交</el-button
@@ -169,6 +173,7 @@ import DeeplConfigView from "@/components/addConfig/DeeplConfigView.vue";
 import GoogleConfigView from "@/components/addConfig/GoogleConfigView.vue";
 import YouDaoConfigView from "@/components/addConfig/YouDaoConfigView.vue";
 import BaiduConfigView from "@/components/addConfig/BaiduConfigView.vue";
+import FreeGoogleConfigView from "@/components/addConfig/FreeGoogleConfigView.vue";
 import { onMounted, reactive, ref, watch } from "vue";
 import type {
   AddConfigForm,
@@ -182,6 +187,7 @@ import type {
   TencentConfig,
   HuoShanConfig,
   PaPaGoConfig,
+  FreeGoogleConfig,
 } from "@/types/props";
 import { ElMessage } from "element-plus";
 import { addConfigRequest, getConfigList } from "@/api/translate";
@@ -298,6 +304,11 @@ let platformOptions: selectOptionType = [
     disabled: false,
   },
   {
+    value: "FreeGoogle",
+    label: "FreeGoogle (免费谷歌)",
+    disabled: false,
+  },
+  {
     value: "YouDao",
     label: "YouDao 有道",
     disabled: false,
@@ -406,6 +417,10 @@ const paPaGoConfig = ref<PaPaGoConfig>({
   url: "https://naveropenapi.apigw.ntruss.com/nmt/v1/translation",
   curlTimeOut: 1000,
 });
+const freeGoogleConfig = ref<FreeGoogleConfig>({
+  proxy: "",
+  curlTimeOut: 1000,
+});
 
 const refreshForm = () => {
   switch (form.typeCfg) {
@@ -436,6 +451,9 @@ const refreshForm = () => {
       break;
     case "PaPaGo":
       form.cfg = paPaGoConfig.value;
+      break;
+    case "FreeGoogle":
+      form.cfg = freeGoogleConfig.value;
       break;
     default:
       ElMessage.warning("不支持的平台");
@@ -478,6 +496,9 @@ watch(
         break;
       case "PaPaGo":
         paPaGoConfig.value = form.cfg as any;
+        break;
+      case "FreeGoogle":
+        freeGoogleConfig.value = form.cfg as any;
         break;
     }
   },

@@ -29,9 +29,10 @@ jobs:
       - name: ls
         run: ls
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./dist.zip
-          tag: ${{ github.ref }}
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./dist.zip
+          asset_name: dist.zip
+          asset_content_type: application/zip

@@ -26,12 +26,9 @@ jobs:
       - name: Zip build folder
         run: zip -r dist.zip dist
 
-      - name: Upload dist.zip to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist.zip
-          asset_name: dist.zip
-          asset_content_type: application/zip
+          args: dist.zip application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

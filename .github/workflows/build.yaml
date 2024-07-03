@@ -26,11 +26,9 @@ jobs:
       - name: Zip build folder
         run: zip -r dist.zip dist
 
-      - name: Upload to release
-        uses: xresloader/upload-to-github-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          file: "dist.zip"
-          tags: true
-          draft: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist.zip
+          tag: ${{ github.ref }}

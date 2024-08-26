@@ -174,31 +174,25 @@ import GoogleConfigView from "@/components/addConfig/GoogleConfigView.vue";
 import YouDaoConfigView from "@/components/addConfig/YouDaoConfigView.vue";
 import BaiduConfigView from "@/components/addConfig/BaiduConfigView.vue";
 import FreeGoogleConfigView from "@/components/addConfig/FreeGoogleConfigView.vue";
-import { onMounted, reactive, ref, watch } from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import type {
   AddConfigForm,
   BaiduConfig,
+  ChatGPTConfig,
   ConfigList,
   DeeplConfig,
+  FreeGoogleConfig,
   GoogleConfig,
-  YouDaoConfig,
-  ChatGPTConfig,
-  XunFeiConfig,
-  TencentConfig,
   HuoShanConfig,
   PaPaGoConfig,
-  FreeGoogleConfig,
+  TencentConfig,
+  XunFeiConfig,
+  YouDaoConfig,
 } from "@/types/props";
-import { ElMessage } from "element-plus";
-import { addConfigRequest, getConfigList } from "@/api/translate";
-import {
-  delConfig,
-  refreshConfigCache,
-  updateStatus,
-  cleanCache,
-  cacheSize,
-} from "@/api/system";
-import { useSystemInitConfigStore } from "@/stores/counter";
+import {ElMessage} from "element-plus";
+import {addConfigRequest, getConfigList} from "@/api/translate";
+import {cacheSize, cleanCache, delConfig, refreshConfigCache, updateStatus,} from "@/api/system";
+import {useSystemInitConfigStore} from "@/stores/counter";
 
 const systemInitConfigStore = useSystemInitConfigStore();
 const systemConfig = systemInitConfigStore.config;
@@ -529,7 +523,7 @@ const submit = () => {
 // const
 </script>
 
-<style scoped>
+<style>
 .p5px {
   padding: 0 5px;
 }

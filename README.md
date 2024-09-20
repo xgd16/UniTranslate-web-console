@@ -1,15 +1,33 @@
-# uniTranslate-web (控制端)
+# uniTranslate-web
 
-### 说明
+This template should help get you started developing with Vue 3 in Vite.
 
-该工具是 [UniTranslate](https://github.com/xgd16/UniTranslate) 的配套控制端
+## Recommended IDE Setup
 
-### 使用
-```shell
-# 安装依赖
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+## Type Support for `.vue` Imports in TS
+
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
 npm install
-# 编译
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
 npm run build
-# 打包成zip
-npm run build-zip
 ```

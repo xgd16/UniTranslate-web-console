@@ -394,8 +394,10 @@ const deeplConfig = ref<DeeplConfig>({
   curlTimeOut: 1000,
 });
 const chatGPTConfig = ref<ChatGPTConfig>({
+  url: "https://api.openai.com",
   key: "",
-  model: "gpt-3.5-turbo-0125",
+  orgId: "",
+  model: "gpt-4o-mini",
 });
 const xunFeiConfig = ref<XunFeiConfig>({ appId: "", apiKey: "", secret: "" });
 const tencentConfig = ref<TencentConfig>({

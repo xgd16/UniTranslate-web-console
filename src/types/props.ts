@@ -52,6 +52,7 @@ export type DeeplConfig = {
 };
 
 export type ChatGPTConfig = {
+  url: string;
   key: string;
   model: string;
   orgId: string;

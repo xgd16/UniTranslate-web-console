@@ -10,8 +10,8 @@ import Router from "@/router";
 import { isJSON, AuthEncrypt } from "./common";
 import { useSystemInitConfigStore } from "@/stores/counter";
 
-// const domain = window.location.origin
-const domain = "http://127.0.0.1:9439";
+const domain = window.location.origin
+// const domain = "http://127.0.0.1:9439";
 
 localStorage.setItem("baseUrl", domain);
 

@@ -375,23 +375,23 @@ const baiduConfig = ref<BaiduConfig>({
   key: "",
   appId: "",
   url: "https://fanyi-api.baidu.com/api/trans/vip/translate",
-  curlTimeOut: 1000,
+  curlTimeOut: 10000,
 });
 const youDaoConfig = ref<YouDaoConfig>({
   appKey: "",
   secKey: "",
-  url: "https://openapi.youdao.com/api",
-  curlTimeOut: 1000,
+  url: "https://openapi.youdao.com/v2/api",
+  curlTimeOut: 10000,
 });
 const googleConfig = ref<GoogleConfig>({
   key: "",
   url: "https://translation.googleapis.com/language/translate/v2",
-  curlTimeOut: 1000,
+  curlTimeOut: 10000,
 });
 const deeplConfig = ref<DeeplConfig>({
   key: "",
   url: "https://api.deepl.com/v2/translate",
-  curlTimeOut: 1000,
+  curlTimeOut: 10000,
 });
 const chatGPTConfig = ref<ChatGPTConfig>({
   url: "https://api.openai.com",
@@ -411,11 +411,11 @@ const paPaGoConfig = ref<PaPaGoConfig>({
   key: "",
   keyId: "",
   url: "https://naveropenapi.apigw.ntruss.com/nmt/v1/translation",
-  curlTimeOut: 1000,
+  curlTimeOut: 10000,
 });
 const freeGoogleConfig = ref<FreeGoogleConfig>({
   proxy: "",
-  curlTimeOut: 1000,
+  curlTimeOut: 10000,
 });
 
 const refreshForm = () => {

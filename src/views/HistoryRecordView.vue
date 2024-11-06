@@ -57,6 +57,14 @@
           >请求内容</el-button
         >
         <el-button
+          v-if="scope.row.translate"
+          link
+          type="primary"
+          size="small"
+          @click="transContentModal(scope.row)"
+          >结果</el-button
+        >
+        <el-button
           v-if="scope.row.status == 0"
           link
           type="primary"
@@ -92,6 +100,14 @@
       v-model="bodyView"
     ></el-input>
   </el-dialog>
+  <el-dialog v-model="transContentDialogVisible" :title="transContentTitle" width="50%">
+    <el-input
+      type="textarea"
+      resize="none"
+      :autosize="{ minRows: 30, maxRows: 30 }"
+      v-model="transContent"
+    ></el-input>
+  </el-dialog>
   <el-dialog v-model="errDialogVisible" :title="errModalTitle" width="50%">
     <el-input
       type="textarea"
@@ -124,8 +140,10 @@ const tableRowClassName = ({
 
 const dialogVisible = ref(false);
 const errDialogVisible = ref(false);
+const transContentDialogVisible = ref(false);
 const modalTitle = ref("");
 const errModalTitle = ref("");
+const transContentTitle = ref("");
 
 const tableData = ref<RequestRecordList[]>([]);
 
@@ -133,6 +151,11 @@ const pageSize = 15;
 const tableTotal = ref<number>(0);
 const bodyView = ref("");
 const errBodyView = ref("");
+const transContent = ref("");
+
+
+
+
 
 const getRequestRecordFunc = (page: number = 1, size: number = pageSize) => {
   getRequestRecord({ page: page, size: size }).then((res) => {
@@ -171,6 +194,12 @@ const errBoduModal = (row: RequestRecordList) => {
   errBodyView.value = row.errMsg;
 };
 
+const transContentModal = (row: RequestRecordList) => {
+  transContentDialogVisible.value = true;
+  transContentTitle.value = `[${row.id}] 翻译内容`;
+  transContent.value = JSON.stringify(JSON.parse(row.translate), null, 2);
+};
+
 const autoRefreshStatus = ref(false); // 自动刷新状态
 const autoRefreshTimer = ref<any>(0); // 自动刷新定时器
 const autoRefreshSec = 3; // 自动刷新秒数
@@ -181,7 +210,7 @@ onBeforeUnmount(() => {
 });
 
 // 监听自动刷新状态
-watch(autoRefreshStatus, (isOpen) => {
+watch(autoRefreshStatus, (isOpen: any) => {
   if (isOpen) {
     ElMessage.success(`自动刷新已开启-每${autoRefreshSec}秒刷新一次`);
     getRequestRecordFunc();

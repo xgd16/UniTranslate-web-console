@@ -131,6 +131,7 @@ export type RequestRecordList = {
   reqPlatform: string;
   reqFrom: string;
   reqTo: string;
+  translate: string,
   statusName: string;
   createTime: string;
   updateTime: string;

@@ -1,0 +1,95 @@
+/* 自定义主题样式 */
+
+:root {
+  --vp-c-brand: #2563EB;
+  --vp-c-brand-light: #3B82F6;
+  --vp-c-brand-lighter: #60A5FA;
+  --vp-c-brand-dark: #1D4ED8;
+  --vp-c-brand-darker: #1E40AF;
+}
+
+/* 优化导航按钮样式 */
+.VPDocFooter {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.VPDocFooter .pager {
+  margin: 0 !important;
+}
+
+.VPDocFooter .pager .pager-link {
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  transition: all 0.2s ease !important;
+}
+
+.VPDocFooter .pager .pager-link:hover {
+  border-color: var(--vp-c-brand) !important;
+  color: var(--vp-c-brand) !important;
+  background-color: transparent !important;
+}
+
+.VPDocFooter .pager .pager-link .desc {
+  font-size: 12px !important;
+  opacity: 0.8 !important;
+}
+
+/* 优化内容区域间距 */
+.VPDoc {
+  padding-bottom: 32px !important;
+}
+
+.VPDoc .content {
+  padding: 32px !important;
+}
+
+/* 优化标题样式 */
+.VPDoc h1 {
+  font-size: 2.2em !important;
+  margin-bottom: 1.5em !important;
+}
+
+.VPDoc h2 {
+  font-size: 1.8em !important;
+  margin: 2em 0 1em !important;
+  border-top: none !important;
+}
+
+.VPDoc h3 {
+  font-size: 1.4em !important;
+  margin: 1.5em 0 0.8em !important;
+}
+
+/* 优化列表样式 */
+.VPDoc ul {
+  margin: 0.8em 0 !important;
+  line-height: 1.7 !important;
+}
+
+/* 优化代码块样式 */
+.VPDoc div[class*='language-'] {
+  margin: 1em 0 !important;
+  border-radius: 8px !important;
+}
+
+/* 优化表格样式 */
+.VPDoc table {
+  margin: 1em 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+/* 优化提示框样式 */
+.VPDoc .custom-block {
+  margin: 1em 0 !important;
+  padding: 1em !important;
+  border-radius: 8px !important;
+}
+
+/* 优化搜索框样式 */
+.VPNavBarSearch {
+  margin-right: 1em !important;
+}

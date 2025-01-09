@@ -1,0 +1,13 @@
+{
+  "name": "unitranslate-web-docs",
+  "version": "1.0.0",
+  "description": "Documentation for UniTranslate Web Control Panel",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.5"
+  }
+}

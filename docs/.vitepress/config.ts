@@ -7,7 +7,14 @@ export default defineConfig({
   lang: "zh-CN",
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    ['meta', { name: 'robots', content: 'all' }],
+    ['meta', { name: 'google-site-verification', content: 'your-verification-code' }],
   ],
+  lastUpdated: true,
+  cleanUrls: true,
+  sitemap: {
+    hostname: 'https://uni-translate-doc.todream.net'
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',

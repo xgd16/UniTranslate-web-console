@@ -4,10 +4,12 @@
   "description": "Documentation for UniTranslate Web Control Panel",
   "scripts": {
     "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
+    "docs:build": "vitepress build && node scripts/generate-sitemap.js",
+    "docs:preview": "vitepress preview",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "devDependencies": {
-    "vitepress": "^1.5"
+    "vitepress": "1.0.0-rc.31",
+    "sitemap": "^7.1.1"
   }
 }

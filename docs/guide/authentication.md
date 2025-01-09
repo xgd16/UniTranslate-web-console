@@ -227,3 +227,148 @@ def encrypt_request(data, key):
    - 检查数据编码格式
    - 验证签名计算过程
    - 确保 IV 随机生成且正确拼接
+
+## 🔐 认证
+
+UniTranslate 使用自定义的签名认证机制来确保 API 调用的安全性。
+
+### 认证机制
+
+认证过程包含以下步骤：
+
+1. 准备请求参数
+2. 对参数进行排序和格式化
+3. 使用密钥和格式化后的参数生成签名
+4. 在请求头中添加签名
+
+### 签名生成规则
+
+签名生成遵循以下规则：
+
+1. 将所有参数按照键值对格式化：`key:value`
+2. 对于数组值，将其转换为逗号分隔的字符串：`key:value1,value2,value3`
+3. 对于嵌套对象，使用 `|` 包裹其格式化结果：`key:|nestedKey1:value1&nestedKey2:value2|`
+4. 将所有格式化后的参数按字母顺序排序
+5. 使用 `&` 连接所有参数
+6. 将密钥拼接在参数字符串前面
+7. 对最终字符串进行 MD5 加密
+
+### 代码示例
+
+#### TypeScript/JavaScript
+
+```typescript
+import { MD5 } from "crypto-js";
+
+function AuthEncrypt(key: string, params: { [key: string]: any }): string {
+    return MD5(key + sortMapToStr(params)).toString();
+}
+
+const sortMapToStr = (map: { [key: string]: any }): string => {
+    let mapArr = new Array();
+    for (const key in map) {
+        const item = map[key];
+        if (Array.isArray(item)) {
+            mapArr.push(`${key}:${item.join(",")}`);
+            continue;
+        }
+        if (typeof item === "object") {
+            mapArr.push(`${key}:|${sortMapToStr(item)}|`);
+            continue;
+        }
+        mapArr.push(`${key}:${item}`);
+    }
+    return mapArr.sort().join("&");
+};
+```
+
+#### PHP
+
+```php
+class AuthEncrypt {
+    private string $key;
+    private array $params;
+
+    public function __construct(string $key, array $params)
+    {
+        $this->key = $key;
+        $this->params = $params;
+    }
+
+    public function encrypt(): string
+    {
+        return md5($this->key . $this->sortMapToStr($this->params));
+    }
+
+    private function isAssociativeArray(array $arr): bool {
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
+    private function sortMapToStr(array $params): string
+    {
+        $mapArr = [];
+        foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                if (!$this->isAssociativeArray($value)) {
+                    $mapArr[] = "{$key}:" . implode(',', $value);
+                } else {
+                    $mapArr[] = "{$key}:|{$this->sortMapToStr($value)}|";
+                }
+                continue;
+            }
+            $mapArr[] = "{$key}:" . $value;
+        }
+        asort($mapArr);
+        return implode('&', $mapArr);
+    }
+}
+```
+
+### 使用示例
+
+```typescript
+// 请求参数
+const params = {
+    c: {
+        cc: 1,
+        cb: 2,
+        ca: 3,
+        cd: 4,
+    },
+    a: 1,
+    b: [4, 1, 2],
+};
+
+// 生成签名
+const sign = AuthEncrypt("your-secret-key", params);
+
+// API 请求
+const response = await fetch("https://api.example.com/translate", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "X-Auth-Sign": sign
+    },
+    body: JSON.stringify(params)
+});
+```
+
+### 注意事项
+
+1. **参数排序**
+   - 所有参数必须按照字母顺序排序
+   - 嵌套对象内的参数也需要排序
+
+2. **数据类型处理**
+   - 数组值会被转换为逗号分隔的字符串
+   - 嵌套对象会被特殊处理，使用 `|` 包裹
+
+3. **安全性建议**
+   - 密钥要保管好，不要泄露
+   - 建议使用 HTTPS 传输
+   - 定期更换密钥
+
+4. **常见问题**
+   - 确保参数名和值的大小写一致
+   - 注意特殊字符的处理
+   - 验证失败时检查参数排序

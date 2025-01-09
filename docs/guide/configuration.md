@@ -23,6 +23,7 @@ server:
 ### 数据库配置
 
 #### MySQL
+
 ```yaml
 mysql:
   host: "localhost"
@@ -34,6 +35,7 @@ mysql:
 ```
 
 #### SQLite
+
 ```yaml
 sqlite:
   enable: true
@@ -49,57 +51,6 @@ redis:
   password: ""
   db: 0
   prefix: "uni_translate:"
-```
-
-## 翻译平台配置
-
-### 百度翻译
-
-```yaml
-translate:
-  baidu:
-    - appid: "your-appid"
-      secret: "your-secret"
-      # API 等级（数字越小优先级越高）
-      grade: 1
-```
-
-### 谷歌翻译
-
-```yaml
-translate:
-  google:
-    - key: "your-api-key"
-      grade: 1
-```
-
-### DeepL
-
-```yaml
-translate:
-  deepl:
-    - key: "your-api-key"
-      grade: 1
-```
-
-### ChatGPT
-
-```yaml
-translate:
-  chatgpt:
-    - key: "your-api-key"
-      model: "gpt-3.5-turbo"
-      grade: 1
-```
-
-### 有道翻译
-
-```yaml
-translate:
-  youdao:
-    - appid: "your-appid"
-      secret: "your-secret"
-      grade: 1
 ```
 
 ## 监控和日志配置
@@ -136,37 +87,22 @@ log:
   path: "./log"
 ```
 
-## 环境变量支持
-
-UniTranslate 支持通过环境变量覆盖配置文件中的设置：
-
-```bash
-# 服务配置
-export UNI_SERVER_ADDRESS="0.0.0.0:9431"
-export UNI_SERVER_KEY="your-secret-key"
-
-# 数据库配置
-export UNI_MYSQL_HOST="localhost"
-export UNI_MYSQL_PORT="3306"
-
-# Redis 配置
-export UNI_REDIS_HOST="localhost"
-export UNI_REDIS_PORT="6379"
-```
-
 ## 配置最佳实践
 
 1. 安全性
+
    - 使用强密钥
    - 避免在代码中硬编码敏感信息
    - 使用环境变量管理敏感配置
 
 2. 性能
+
    - 根据服务器资源调整并发配置
    - 合理设置缓存过期时间
    - 配置多个翻译平台实现负载均衡
 
 3. 可维护性
+
    - 使用环境变量区分开发和生产环境
    - 保持配置文件结构清晰
    - 记录配置变更历史

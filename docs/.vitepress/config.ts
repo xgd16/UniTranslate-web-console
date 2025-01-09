@@ -2,13 +2,27 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "UniTranslate",
-  description: "UniTranslate 说明文档",
+  title: "UniTranslate - 强大的多平台翻译聚合服务",
+  description: "UniTranslate 是一个强大的多平台翻译聚合服务，支持多种主流翻译平台，提供智能路由、自动故障转移和高效缓存功能。轻松集成各大翻译服务，让翻译更简单、更智能。",
   lang: "zh-CN",
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-    ['meta', { name: 'robots', content: 'all' }],
+    // SEO Meta 标签
+    ['meta', { name: 'robots', content: 'index, follow' }],
     ['meta', { name: 'google-site-verification', content: 'your-verification-code' }],
+    ['meta', { name: 'keywords', content: '翻译服务,翻译API,多平台翻译,翻译聚合,机器翻译,AI翻译,自动翻译,翻译工具,翻译接口' }],
+    ['meta', { name: 'author', content: 'UniTranslate Team' }],
+    // Open Graph Meta 标签
+    ['meta', { property: 'og:title', content: 'UniTranslate - 强大的多平台翻译聚合服务' }],
+    ['meta', { property: 'og:description', content: 'UniTranslate 是一个强大的多平台翻译聚合服务，支持多种主流翻译平台，提供智能路由、自动故障转移和高效缓存功能。' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:url', content: 'https://uni-translate-doc.todream.net/' }],
+    ['meta', { property: 'og:image', content: 'https://uni-translate-doc.todream.net/logo.svg' }],
+    // Twitter Card Meta 标签
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'UniTranslate - 强大的多平台翻译聚合服务' }],
+    ['meta', { name: 'twitter:description', content: 'UniTranslate 是一个强大的多平台翻译聚合服务，支持多种主流翻译平台，提供智能路由、自动故障转移和高效缓存功能。' }],
+    ['meta', { name: 'twitter:image', content: 'https://uni-translate-doc.todream.net/logo.svg' }],
   ],
   lastUpdated: true,
   cleanUrls: true,

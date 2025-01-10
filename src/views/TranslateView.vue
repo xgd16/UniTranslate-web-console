@@ -81,7 +81,10 @@
 
       <div class="text-panel target-panel">
         <div class="panel-header">
-          <span class="panel-title">翻译结果</span>
+          <span class="panel-title">
+            翻译结果
+            <span v-if="loading || apiDelay" class="delay-text">({{ loading ? displayDelay : apiDelay }}ms)</span>
+          </span>
           <div class="panel-tools">
             <el-button
               text
@@ -110,24 +113,33 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch, onUnmounted } from "vue";
 import { translateRequest } from "@/api/translate";
 import { ElMessage } from "element-plus";
 import { useLangListStore, useTranslateStore } from "@/stores/counter";
 import { Right, Position, Delete, CopyDocument } from "@element-plus/icons-vue";
 
 const loading = ref(false);
+const apiDelay = ref(0);
+const displayDelay = ref(0);
+let timerInterval: NodeJS.Timer | null = null;
 
-type selectOptionType = {
-  value: string;
-  label: string;
-  disabled: boolean;
-}[];
+const startTimer = () => {
+  const startTime = Date.now();
+  displayDelay.value = 0;
+  if (timerInterval) clearInterval(timerInterval);
+  
+  timerInterval = setInterval(() => {
+    displayDelay.value = Date.now() - startTime;
+  }, 10); // 每10ms更新一次
+};
 
-let options: selectOptionType = [];
-let fromOptions: selectOptionType = [];
-
-const langListStore = useLangListStore();
+const stopTimer = () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+};
 
 const form = reactive({
   fromLang: "auto",
@@ -149,6 +161,17 @@ watch(form, (value) => {
 
 const translateStore = useTranslateStore();
 const translateBody = ref<string>("");
+
+const langListStore = useLangListStore();
+
+type selectOptionType = {
+  value: string;
+  label: string;
+  disabled: boolean;
+}[];
+
+let options: selectOptionType = [];
+let fromOptions: selectOptionType = [];
 
 for (const k in langListStore.list) {
   const item = {
@@ -235,6 +258,8 @@ const submitTranslate = async () => {
     return;
   }
   loading.value = true;
+  startTimer();
+  
   try {
     const res = await translateRequest({
       from: form.fromLang,
@@ -242,12 +267,15 @@ const submitTranslate = async () => {
       text: form.text.split("\n"),
       platform: form.platform,
     });
+    apiDelay.value = displayDelay.value;
+    stopTimer();
     if (res.code === 1000) {
       translateBody.value = JSON.stringify(res.data, null, 2);
     }
   } catch (error) {
     console.error(error);
     ElMessage.error("翻译失败");
+    stopTimer();
   } finally {
     loading.value = false;
   }
@@ -265,6 +293,10 @@ const copyResult = () => {
       });
   }
 };
+
+onUnmounted(() => {
+  stopTimer();
+});
 </script>
 
 <style scoped>
@@ -407,5 +439,11 @@ const copyResult = () => {
 
 :deep(.el-button .el-icon) {
   font-size: 16px;
+}
+
+.delay-text {
+  font-size: 12px;
+  margin-left: 4px;
+  color: #909399;
 }
 </style>

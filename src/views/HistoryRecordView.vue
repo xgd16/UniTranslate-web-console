@@ -4,11 +4,15 @@
       :data="tableData"
       :row-class-name="tableRowClassName"
       class="history-table"
-      height="calc(100vh - 120px)"
       v-loading="loading"
     >
       <el-table-column prop="id" label="ID" width="80" align="center" />
-      <el-table-column prop="tId" label="任务ID" min-width="120" align="center" />
+      <el-table-column
+        prop="tId"
+        label="任务ID"
+        min-width="120"
+        align="center"
+      />
       <el-table-column
         prop="clientIp"
         label="客户端IP"
@@ -17,7 +21,10 @@
       />
       <el-table-column prop="statusName" label="状态" width="80" align="center">
         <template #default="scope">
-          <el-tag :type="scope.row.status === 1 ? 'success' : 'warning'" size="small">
+          <el-tag
+            :type="scope.row.status === 1 ? 'success' : 'warning'"
+            size="small"
+          >
             {{ scope.row.statusName }}
           </el-tag>
         </template>
@@ -58,21 +65,24 @@
             type="primary"
             size="small"
             @click="bodyModal(scope.row)"
-          >请求内容</el-button>
+            >请求内容</el-button
+          >
           <el-button
             v-if="scope.row.translate"
             link
             type="primary"
             size="small"
             @click="transContentModal(scope.row)"
-          >结果</el-button>
+            >结果</el-button
+          >
           <el-button
             v-if="scope.row.status == 0"
             link
             type="warning"
             size="small"
             @click="errBoduModal(scope.row)"
-          >错误信息</el-button>
+            >错误信息</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -85,7 +95,7 @@
         :page-size="pageSize"
         :total="tableTotal"
       />
-      <el-button 
+      <el-button
         :type="autoRefreshStatus ? 'success' : 'primary'"
         @click="autoRefreshStatus = !autoRefreshStatus"
       >
@@ -93,7 +103,12 @@
       </el-button>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="modalTitle" width="60%" destroy-on-close>
+    <el-dialog
+      v-model="dialogVisible"
+      :title="modalTitle"
+      width="60%"
+      destroy-on-close
+    >
       <el-input
         v-model="bodyView"
         type="textarea"
@@ -103,7 +118,12 @@
       />
     </el-dialog>
 
-    <el-dialog v-model="transContentDialogVisible" :title="transContentTitle" width="60%" destroy-on-close>
+    <el-dialog
+      v-model="transContentDialogVisible"
+      :title="transContentTitle"
+      width="60%"
+      destroy-on-close
+    >
       <el-input
         v-model="transContent"
         type="textarea"
@@ -113,7 +133,12 @@
       />
     </el-dialog>
 
-    <el-dialog v-model="errDialogVisible" :title="errModalTitle" width="60%" destroy-on-close>
+    <el-dialog
+      v-model="errDialogVisible"
+      :title="errModalTitle"
+      width="60%"
+      destroy-on-close
+    >
       <el-input
         v-model="errBodyView"
         type="textarea"
@@ -161,7 +186,10 @@ const bodyView = ref("");
 const errBodyView = ref("");
 const transContent = ref("");
 
-const getRequestRecordFunc = async (page: number = 1, size: number = pageSize) => {
+const getRequestRecordFunc = async (
+  page: number = 1,
+  size: number = pageSize
+) => {
   loading.value = true;
   try {
     const res = await getRequestRecord({ page, size });

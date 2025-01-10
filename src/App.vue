@@ -1,26 +1,22 @@
 <template>
   <div
     v-if="currentRoute !== '/login'"
-    style="
-      width: 100%;
-      height: 100%;
-      display: inline-flex;
-      flex-direction: column;
-    "
+    class="app-container"
   >
-    <div id="app-view-top">
-      <div
-        :class="
-          'app-view-top-item ' + (item.path == currentRoute ? 'selected' : '')
-        "
-        v-for="item in menu"
-        @click="switchRoutePath(item)"
-      >
-        {{ item.title }}
+    <div class="app-header">
+      <div class="menu-container">
+        <div
+          v-for="item in menu"
+          :key="item.path"
+          :class="['menu-item', { 'is-active': item.path === currentRoute }]"
+          @click="switchRoutePath(item)"
+        >
+          {{ item.title }}
+        </div>
       </div>
     </div>
-    <div id="app-view-body">
-      <el-row id="app-view-body-row">
+    <div class="app-main">
+      <el-row class="main-content">
         <RouterView />
       </el-row>
     </div>
@@ -73,48 +69,55 @@ const menu = ref<MenuList[]>([
 </script>
 
 <style scoped>
-#app-view-body {
-  padding: 50px 1% 0 1%;
-  overflow-y: auto;
-  height: calc(100vh - 35px - 5px * 2);
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--el-bg-color);
 }
 
-#app-view-top {
-  margin: 5px;
-  height: 35px;
-  width: calc(100vw - 5px * 2);
-  border-radius: 5px;
-  box-shadow: var(--el-box-shadow-light);
-  background-color: var(--el-color-black);
-  padding: 0 5px;
+.app-header {
+  padding: 8px 16px;
+  background-color: var(--el-bg-color-overlay);
+  box-shadow: var(--el-box-shadow-lighter);
+  z-index: 1;
 }
 
-#app-view-top > .app-view-top-item {
-  line-height: 33px;
-  display: inline;
+.menu-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.menu-item {
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  margin: 0 5px;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background-color: #282828;
-  color: rgb(216, 216, 216);
+  color: var(--el-text-color-regular);
+  transition: all 0.3s ease;
+  font-size: 14px;
 }
 
-#app-view-top > .app-view-top-item:hover {
+.menu-item:hover {
+  background-color: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+}
+
+.menu-item.is-active {
+  background-color: var(--el-color-primary);
   color: white;
-  background-color: var(--el-color-black);
 }
 
-#app-view-top > .selected {
-  background-color: #5d5d5d;
-  color: white !important;
+.app-main {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
 }
 
-#app-view-body-row {
-  background-color: var(--el-color-black);
-  padding: 10px 20px;
-  border-radius: 5px;
-  box-shadow: var(--el-box-shadow-light);
-  margin-bottom: 30px;
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
 }
 </style>

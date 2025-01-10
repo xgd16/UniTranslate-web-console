@@ -1,7 +1,4 @@
-import {
-  createRouter,
-  createWebHashHistory,
-} from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import LoginView from "@/views/LoginView.vue";
 import TranslateView from "@/views/TranslateView.vue";
 import HistoryRecord from "@/views/HistoryRecordView.vue";
@@ -60,6 +57,10 @@ const router = createRouter({
       path: "/apiDoc",
       name: "apiDoc",
       component: ApiDocView,
+      meta: {
+        title: "API文档",
+        auth: true,
+      },
     },
   ],
 });

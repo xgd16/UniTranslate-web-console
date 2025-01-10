@@ -1,121 +1,127 @@
 <template>
-  <el-table
-    :data="tableData"
-    style="width: 100%"
-    :row-class-name="tableRowClassName"
-  >
-    <el-table-column prop="id" label="ID" width="100" align="center" />
-    <el-table-column prop="tId" label="任务ID" width="auto" align="center" />
-    <el-table-column
-      prop="clientIp"
-      label="客户端IP"
-      align="center"
-      width="150"
-    />
-    <el-table-column
-      prop="statusName"
-      label="状态"
-      width="100"
-      align="center"
-    />
-    <el-table-column prop="" label="语言 (源/目标)" width="120" align="center"
-      ><template #default="scope">{{
-        scope.row.reqFrom + " / " + scope.row.reqTo
-      }}</template></el-table-column
+  <div class="history-container">
+    <el-table
+      :data="tableData"
+      :row-class-name="tableRowClassName"
+      class="history-table"
+      height="calc(100vh - 120px)"
     >
-    <el-table-column
-      prop="platform"
-      label="翻译类型"
-      width="250"
-      align="center"
-    />
-    <el-table-column
-      prop="reqPlatform"
-      label="请求类型"
-      width="100"
-      align="center"
-    />
-    <el-table-column
-      prop="takeTimeViewStr"
-      label="耗时"
-      width="110"
-      align="center"
-    />
-    <el-table-column
-      prop="createTime"
-      label="操作时间"
-      align="center"
-      width="200"
-    />
-    <el-table-column fixed="right" label="操作" width="240" align="center">
-      <template #default="scope">
-        <el-button
-          link
-          type="primary"
-          size="small"
-          @click="bodyModal(scope.row)"
-          >请求内容</el-button
-        >
-        <el-button
-          v-if="scope.row.translate"
-          link
-          type="primary"
-          size="small"
-          @click="transContentModal(scope.row)"
-          >结果</el-button
-        >
-        <el-button
-          v-if="scope.row.status == 0"
-          link
-          type="primary"
-          size="small"
-          @click="errBoduModal(scope.row)"
-          >错误信息</el-button
-        >
-      </template>
-    </el-table-column>
-  </el-table>
-  <div class="w-full flex flex-row">
-    <div class="basis-1/2">
+      <el-table-column prop="id" label="ID" width="80" align="center" />
+      <el-table-column prop="tId" label="任务ID" min-width="120" align="center" />
+      <el-table-column
+        prop="clientIp"
+        label="客户端IP"
+        align="center"
+        width="130"
+      />
+      <el-table-column prop="statusName" label="状态" width="80" align="center">
+        <template #default="scope">
+          <el-tag :type="scope.row.status === 1 ? 'success' : 'warning'" size="small">
+            {{ scope.row.statusName }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="语言 (源/目标)" width="120" align="center">
+        <template #default="scope">
+          <span>{{ scope.row.reqFrom }} / {{ scope.row.reqTo }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="platform"
+        label="翻译类型"
+        width="200"
+        align="center"
+      />
+      <el-table-column
+        prop="reqPlatform"
+        label="请求类型"
+        width="100"
+        align="center"
+      />
+      <el-table-column
+        prop="takeTimeViewStr"
+        label="耗时"
+        width="100"
+        align="center"
+      />
+      <el-table-column
+        prop="createTime"
+        label="操作时间"
+        align="center"
+        width="180"
+      />
+      <el-table-column fixed="right" label="操作" width="200" align="center">
+        <template #default="scope">
+          <el-button
+            link
+            type="primary"
+            size="small"
+            @click="bodyModal(scope.row)"
+          >请求内容</el-button>
+          <el-button
+            v-if="scope.row.translate"
+            link
+            type="primary"
+            size="small"
+            @click="transContentModal(scope.row)"
+          >结果</el-button>
+          <el-button
+            v-if="scope.row.status == 0"
+            link
+            type="warning"
+            size="small"
+            @click="errBoduModal(scope.row)"
+          >错误信息</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div class="table-footer">
       <el-pagination
         background
-        layout="prev, pager, next"
+        layout="total, prev, pager, next"
         @current-change="currChange"
         :page-size="pageSize"
         :total="tableTotal"
-        style="margin-top: 10px"
       />
+      <el-button 
+        :type="autoRefreshStatus ? 'success' : 'primary'"
+        @click="autoRefreshStatus = !autoRefreshStatus"
+      >
+        {{ autoRefreshStatus ? "停止自动刷新" : "自动刷新" }}
+      </el-button>
     </div>
-    <div class="basis-1/2 inline-block text-right" style="margin-top: 0.51rem">
-      <el-button @click="autoRefreshStatus = !autoRefreshStatus">{{
-        autoRefreshStatus ? "停止" : "自动刷新"
-      }}</el-button>
-    </div>
+
+    <el-dialog v-model="dialogVisible" :title="modalTitle" width="60%" destroy-on-close>
+      <el-input
+        v-model="bodyView"
+        type="textarea"
+        :autosize="{ minRows: 20, maxRows: 20 }"
+        resize="none"
+        readonly
+      />
+    </el-dialog>
+
+    <el-dialog v-model="transContentDialogVisible" :title="transContentTitle" width="60%" destroy-on-close>
+      <el-input
+        v-model="transContent"
+        type="textarea"
+        :autosize="{ minRows: 20, maxRows: 20 }"
+        resize="none"
+        readonly
+      />
+    </el-dialog>
+
+    <el-dialog v-model="errDialogVisible" :title="errModalTitle" width="60%" destroy-on-close>
+      <el-input
+        v-model="errBodyView"
+        type="textarea"
+        :autosize="{ minRows: 20, maxRows: 20 }"
+        resize="none"
+        readonly
+      />
+    </el-dialog>
   </div>
-  <el-dialog v-model="dialogVisible" :title="modalTitle" width="50%">
-    <el-input
-      type="textarea"
-      resize="none"
-      :autosize="{ minRows: 30, maxRows: 30 }"
-      v-model="bodyView"
-    ></el-input>
-  </el-dialog>
-  <el-dialog v-model="transContentDialogVisible" :title="transContentTitle" width="50%">
-    <el-input
-      type="textarea"
-      resize="none"
-      :autosize="{ minRows: 30, maxRows: 30 }"
-      v-model="transContent"
-    ></el-input>
-  </el-dialog>
-  <el-dialog v-model="errDialogVisible" :title="errModalTitle" width="50%">
-    <el-input
-      type="textarea"
-      resize="none"
-      :autosize="{ minRows: 30, maxRows: 30 }"
-      v-model="errBodyView"
-    ></el-input>
-  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -152,10 +158,6 @@ const tableTotal = ref<number>(0);
 const bodyView = ref("");
 const errBodyView = ref("");
 const transContent = ref("");
-
-
-
-
 
 const getRequestRecordFunc = (page: number = 1, size: number = pageSize) => {
   getRequestRecord({ page: page, size: size }).then((res) => {
@@ -224,4 +226,47 @@ watch(autoRefreshStatus, (isOpen: any) => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.history-container {
+  height: 100%;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.history-table {
+  flex: 1;
+  background-color: var(--el-bg-color-overlay);
+  border-radius: 8px;
+  box-shadow: var(--el-box-shadow-lighter);
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--el-bg-color-overlay);
+  border-radius: 8px;
+  box-shadow: var(--el-box-shadow-lighter);
+}
+
+:deep(.warning-row) {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+
+:deep(.success-row) {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+
+:deep(.el-dialog__body) {
+  padding: 16px;
+}
+
+:deep(.el-textarea__inner) {
+  background-color: var(--el-bg-color-overlay);
+  border-color: var(--el-border-color-light);
+  font-family: monospace;
+}
+</style>

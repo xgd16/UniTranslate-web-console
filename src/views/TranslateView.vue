@@ -121,7 +121,7 @@ hljs.registerLanguage("json", json);
 const loading = ref(false);
 const apiDelay = ref(0);
 const displayDelay = ref(0);
-let timerInterval: NodeJS.Timer | null = null;
+let timerInterval: number | null = null;
 
 const startTimer = () => {
   const startTime = Date.now();

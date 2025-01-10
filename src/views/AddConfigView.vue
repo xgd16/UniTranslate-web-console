@@ -489,8 +489,9 @@ const form = reactive<AddConfigForm>({
   platform: "",
   status: true,
   level: 1,
-  cfg: null,
+  cfg: {} as any,
   typeCfg: "Google",
+  md5: "",
 });
 
 const baiduConfig = ref<BaiduConfig>({

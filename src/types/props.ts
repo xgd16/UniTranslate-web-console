@@ -100,13 +100,13 @@ export type AddConfigForm<
     | HuoShanConfig
     | PaPaGoConfig
     | FreeGoogleConfig
-    | null
 > = {
   platform: string;
   status: boolean;
   level: number;
   cfg: T;
   typeCfg: string;
+  md5: string;
 };
 
 export type ConfigList = {
@@ -131,7 +131,7 @@ export type RequestRecordList = {
   reqPlatform: string;
   reqFrom: string;
   reqTo: string;
-  translate: string,
+  translate: string;
   statusName: string;
   createTime: string;
   updateTime: string;

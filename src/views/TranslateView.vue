@@ -60,7 +60,10 @@
               class="p-0"
               style="height: 21px"
               size="small"
-              @click="form.text = ''"
+              @click="
+                form.text = '';
+                translateBody = '';
+              "
             >
               清空
             </el-button>
@@ -226,26 +229,28 @@ let platformOptions: selectOptionType = [
   },
 ];
 
-const submitTranslate = () => {
+const submitTranslate = async () => {
   if (!form.text) {
-    ElMessage.warning("请填写需要翻译的内容...");
+    ElMessage.warning("请输入需要翻译的内容");
     return;
   }
   loading.value = true;
-  translateRequest({
-    from: form.fromLang,
-    to: form.toLang,
-    text: form.text.split("\n"),
-    platform: form.platform,
-  })
-    .then((res) => {
-      loading.value = false;
-      if (res.code != 1000) return;
-      translateBody.value = JSON.stringify(res.data, null, 4);
-    })
-    .catch(() => {
-      loading.value = false;
+  try {
+    const res = await translateRequest({
+      from: form.fromLang,
+      to: form.toLang,
+      text: form.text.split("\n"),
+      platform: form.platform,
     });
+    if (res.code === 1000) {
+      translateBody.value = JSON.stringify(res.data, null, 2);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error("翻译失败");
+  } finally {
+    loading.value = false;
+  }
 };
 
 const copyResult = () => {

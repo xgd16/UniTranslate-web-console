@@ -6,7 +6,7 @@
           <span class="panel-title">{{ viewSaveMode }}</span>
           <div class="panel-tools">
             <el-button-group>
-              <el-button type="primary" size="small" @click="submit">
+              <el-button type="primary" size="small" @click="submit" :loading="submitLoading">
                 <el-icon><Check /></el-icon>
                 提交
               </el-button>
@@ -14,6 +14,7 @@
                 type="success"
                 size="small"
                 @click="refreshConfigCacheEvent"
+                :loading="refreshLoading"
               >
                 <el-icon><Refresh /></el-icon>
                 刷新配置
@@ -25,7 +26,7 @@
                 cancel-button-text="取消"
               >
                 <template #reference>
-                  <el-button type="danger" size="small">
+                  <el-button type="danger" size="small" :loading="cleanLoading">
                     <el-icon><Delete /></el-icon>
                     清除缓存 [{{
                       cacheSizeNumber === null ? "未获取" : cacheSizeNumber
@@ -138,6 +139,7 @@
           :data="tableListArr"
           class="config-table"
           height="calc(100vh - 180px)"
+          v-loading="tableLoading"
         >
           <el-table-column
             prop="id"
@@ -209,6 +211,7 @@
                   @click="
                     updateStatusEvent(scope.row.id, scope.row.status ? 0 : 1)
                   "
+                  :loading="statusLoading"
                 >
                   {{ scope.row.status ? "禁用" : "启用" }}
                 </el-button>
@@ -223,6 +226,7 @@
                   type="danger"
                   size="small"
                   @click="delConfigEvent(scope.row.id)"
+                  :loading="deleteLoading"
                 >
                   删除
                 </el-button>
@@ -293,15 +297,13 @@ watch(updateSerialNumber, (newVal) => {
   newVal ? (viewSaveMode.value = "修改") : (viewSaveMode.value = "添加");
 });
 
-const ViewCacheSize = () => {
-  cacheSize()
-    .then((res) => {
-      if (res.code != 1000) return;
-      cacheSizeNumber.value = res.data.size;
-    })
-    .catch((err) => {
-      ElMessage.error("获取缓存大小失败");
-    });
+const ViewCacheSize = async () => {
+  try {
+    const res = await cacheSize();
+    cacheSizeNumber.value = res.data.size;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const reloadView = () => {
@@ -326,51 +328,71 @@ onMounted(() => {
   ViewCacheSize();
 });
 
-const cleanCacheEvent = () => {
-  cleanCache()
-    .then((res) => {
-      if (res.code != 1000) return;
-      ElMessage.success(`成功清除 ${res.data.size} 条缓存`);
-      ViewCacheSize();
-    })
-    .catch((err) => {
-      ElMessage.error("清除翻译缓存失败");
-    });
+const submitLoading = ref(false);
+const refreshLoading = ref(false);
+const cleanLoading = ref(false);
+const statusLoading = ref(false);
+const deleteLoading = ref(false);
+const tableLoading = ref(false);
+
+const cleanCacheEvent = async () => {
+  cleanLoading.value = true;
+  try {
+    const res = await cleanCache();
+    if (res.code === 1000) {
+      ElMessage.success("清除缓存成功");
+      cacheSizeNumber.value = res.data.size;
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    cleanLoading.value = false;
+  }
 };
 
-const refreshConfigCacheEvent = () => {
-  refreshConfigCache()
-    .then((res) => {
-      if (res.code != 1000) return;
-      ElMessage.success("刷新成功");
-    })
-    .catch((err) => {
-      ElMessage.error("刷新失败");
-    });
+const refreshConfigCacheEvent = async () => {
+  refreshLoading.value = true;
+  try {
+    const res = await refreshConfigCache();
+    if (res.code === 1000) {
+      ElMessage.success("刷新配置缓存成功");
+      refreshTableListArr();
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    refreshLoading.value = false;
+  }
 };
 
-const delConfigEvent = (serialNumber: string) => {
-  delConfig(serialNumber)
-    .then((res) => {
-      if (res.code != 1000) return;
+const delConfigEvent = async (serialNumber: string) => {
+  deleteLoading.value = true;
+  try {
+    const res = await delConfig(serialNumber);
+    if (res.code === 1000) {
       ElMessage.success("删除成功");
       refreshTableListArr();
-    })
-    .catch((err) => {
-      ElMessage.error("删除失败");
-    });
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    deleteLoading.value = false;
+  }
 };
 
-const updateStatusEvent = (serialNumber: string, status: number) => {
-  updateStatus(serialNumber, status)
-    .then((res) => {
-      if (res.code != 1000) return;
-      ElMessage.success("更新成功");
+const updateStatusEvent = async (serialNumber: string, status: number) => {
+  statusLoading.value = true;
+  try {
+    const res = await updateStatus(serialNumber, status);
+    if (res.code === 1000) {
+      ElMessage.success("更新状态成功");
       refreshTableListArr();
-    })
-    .catch((err) => {
-      ElMessage.error("更新失败");
-    });
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    statusLoading.value = false;
+  }
 };
 
 type selectOptionType = {
@@ -440,14 +462,21 @@ let platformOptions: selectOptionType = [
 // get config list
 const tableListArr = ref<ConfigList[]>([]);
 const configMap = ref<Map<string, ConfigList>>(new Map());
-const refreshTableListArr = () => {
-  getConfigList().then((res) => {
-    if (res.code != 1000) return;
-    tableListArr.value = res.data;
-    res.data.forEach((value, _) => {
-      configMap.value.set(value.id, value);
-    });
-  });
+const refreshTableListArr = async () => {
+  tableLoading.value = true;
+  try {
+    const res = await getConfigList();
+    if (res.code === 1000) {
+      tableListArr.value = res.data;
+      res.data.forEach((value, _) => {
+        configMap.value.set(value.id, value);
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    tableLoading.value = false;
+  }
 };
 refreshTableListArr();
 
@@ -589,28 +618,28 @@ watch(
   { deep: true }
 );
 
-const submit = () => {
-  refreshForm();
-  if (!form.cfg) {
-    ElMessage.warning("错误的参数配置");
-    return;
+const submit = async () => {
+  submitLoading.value = true;
+  try {
+    const res = await addConfigRequest({
+      platform: form.platform,
+      status: form.status,
+      level: form.level,
+      md5: form.md5,
+      cfg: form.cfg,
+      type: form.typeCfg,
+    });
+    if (res.code === 1000) {
+      ElMessage.success("保存成功");
+      refreshTableListArr();
+      reloadView();
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    submitLoading.value = false;
   }
-  // send request
-  addConfigRequest({
-    platform: form.platform,
-    status: form.status,
-    level: form.level,
-    cfg: form.cfg,
-    md5: updateSerialNumber.value,
-    type: form.typeCfg,
-  }).then((res) => {
-    if (res.code != 1000) return;
-    refreshTableListArr();
-    ElMessage.success("添加成功");
-  });
 };
-
-// const
 </script>
 
 <style scoped>

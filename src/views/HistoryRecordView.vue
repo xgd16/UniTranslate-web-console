@@ -5,6 +5,7 @@
       :row-class-name="tableRowClassName"
       class="history-table"
       height="calc(100vh - 120px)"
+      v-loading="loading"
     >
       <el-table-column prop="id" label="ID" width="80" align="center" />
       <el-table-column prop="tId" label="任务ID" min-width="120" align="center" />
@@ -152,6 +153,7 @@ const errModalTitle = ref("");
 const transContentTitle = ref("");
 
 const tableData = ref<RequestRecordList[]>([]);
+const loading = ref(false);
 
 const pageSize = 15;
 const tableTotal = ref<number>(0);
@@ -159,24 +161,31 @@ const bodyView = ref("");
 const errBodyView = ref("");
 const transContent = ref("");
 
-const getRequestRecordFunc = (page: number = 1, size: number = pageSize) => {
-  getRequestRecord({ page: page, size: size }).then((res) => {
-    if (res.code != 1000) return;
-    tableTotal.value = res.data.count;
-    res.data.list.forEach((value: RequestRecordList) => {
-      const jsonData = JSON.parse(value.body);
-      value.reqFrom = jsonData["from"];
-      value.reqTo = jsonData["to"];
-      value.statusName = value.status == 1 ? "成功" : "失败";
-      value.tId ??= "无";
-      value.reqPlatform ??=
-        jsonData["platform"] != "" ? jsonData["platform"] : "无";
-      if (value.platform == "") value.platform = "无";
-      value.takeTimeViewStr = value.takeTime ? value.takeTime + "ms" : "无";
-      value.errMsg ??= "无";
-    });
-    tableData.value = res.data.list;
-  });
+const getRequestRecordFunc = async (page: number = 1, size: number = pageSize) => {
+  loading.value = true;
+  try {
+    const res = await getRequestRecord({ page, size });
+    if (res.code === 1000) {
+      tableTotal.value = res.data.count;
+      res.data.list.forEach((value: RequestRecordList) => {
+        const jsonData = JSON.parse(value.body);
+        value.reqFrom = jsonData["from"];
+        value.reqTo = jsonData["to"];
+        value.statusName = value.status == 1 ? "成功" : "失败";
+        value.tId ??= "无";
+        value.reqPlatform ??=
+          jsonData["platform"] != "" ? jsonData["platform"] : "无";
+        if (value.platform == "") value.platform = "无";
+        value.takeTimeViewStr = value.takeTime ? value.takeTime + "ms" : "无";
+        value.errMsg ??= "无";
+      });
+      tableData.value = res.data.list;
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
 };
 getRequestRecordFunc();
 

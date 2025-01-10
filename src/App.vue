@@ -103,23 +103,34 @@ const menu = ref<MenuList[]>([
 }
 
 .menu-item {
-  padding: 0 20px;
+  margin: 0 3px;
   cursor: pointer;
+  padding: 3px 8px;
   height: 100%;
   display: flex;
   align-items: center;
+  color: var(--el-text-color-regular);
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.menu-item:hover {
+  color: var(--el-color-primary);
+  background-color: var(--el-color-primary-light-8);
+}
+
+.menu-item.is-active {
+  color: #fff;
+  background-color: var(--el-color-primary);
+  font-weight: 500;
 }
 
 .github-link {
   margin-left: auto;
-  background: none;
   text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 0 6p x s 0 0;
-}
-
-.github-link:hover {
+  padding: 0 6px 0 0;
   background: none;
 }
 

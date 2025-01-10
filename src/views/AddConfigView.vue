@@ -6,7 +6,12 @@
           <span class="panel-title">{{ viewSaveMode }}</span>
           <div class="panel-tools">
             <el-button-group>
-              <el-button type="primary" size="small" @click="submit" :loading="submitLoading">
+              <el-button
+                type="primary"
+                size="small"
+                @click="submit"
+                :loading="submitLoading"
+              >
                 <el-icon><Check /></el-icon>
                 提交
               </el-button>
@@ -746,15 +751,6 @@ const submit = async () => {
 :deep(.el-input-number .el-input__wrapper) {
   padding-left: 12px;
   padding-right: 12px;
-}
-
-:deep(.el-button-group) {
-  display: flex;
-  gap: 4px;
-}
-
-:deep(.el-button-group .el-button) {
-  flex: 1;
 }
 
 :deep(.el-button .el-icon) {

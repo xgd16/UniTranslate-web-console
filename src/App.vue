@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="currentRoute !== '/login'"
-    class="app-container"
-  >
+  <div v-if="currentRoute !== '/login'" class="app-container">
     <div class="app-header">
       <div class="menu-container">
         <div
@@ -97,6 +94,7 @@ const menu = ref<MenuList[]>([
   color: var(--el-text-color-regular);
   transition: all 0.3s ease;
   font-size: 14px;
+  user-select: none;
 }
 
 .menu-item:hover {

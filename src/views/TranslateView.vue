@@ -83,7 +83,9 @@
         <div class="panel-header">
           <span class="panel-title">
             翻译结果
-            <span v-if="loading || apiDelay" class="delay-text">({{ loading ? displayDelay : apiDelay }}ms)</span>
+            <span v-if="loading || apiDelay" class="delay-text"
+              >({{ loading ? displayDelay : apiDelay }}ms)</span
+            >
           </span>
           <div class="panel-tools">
             <el-button
@@ -98,15 +100,7 @@
             </el-button>
           </div>
         </div>
-        <el-input
-          v-model="translateBody"
-          type="textarea"
-          :autosize="false"
-          placeholder="翻译结果将显示在这里..."
-          readonly
-          resize="none"
-          class="text-input"
-        />
+        <pre class="json-output"><code v-html="formattedJson" /></pre>
       </div>
     </div>
   </div>
@@ -118,6 +112,11 @@ import { translateRequest } from "@/api/translate";
 import { ElMessage } from "element-plus";
 import { useLangListStore, useTranslateStore } from "@/stores/counter";
 import { Right, Position, Delete, CopyDocument } from "@element-plus/icons-vue";
+import hljs from "highlight.js/lib/core";
+import json from "highlight.js/lib/languages/json";
+import "highlight.js/styles/atom-one-dark.css";
+
+hljs.registerLanguage("json", json);
 
 const loading = ref(false);
 const apiDelay = ref(0);
@@ -128,7 +127,7 @@ const startTimer = () => {
   const startTime = Date.now();
   displayDelay.value = 0;
   if (timerInterval) clearInterval(timerInterval);
-  
+
   timerInterval = setInterval(() => {
     displayDelay.value = Date.now() - startTime;
   }, 10); // 每10ms更新一次
@@ -161,6 +160,55 @@ watch(form, (value) => {
 
 const translateStore = useTranslateStore();
 const translateBody = ref<string>("");
+const formattedJson = ref<string>("");
+
+const formatAndHighlight = (data: any) => {
+  const formatted = JSON.stringify(data, null, 2);
+  formattedJson.value = hljs.highlight(formatted, { language: "json" }).value;
+  return formatted;
+};
+
+const submitTranslate = async () => {
+  if (!form.text) {
+    ElMessage.warning("请输入需要翻译的内容");
+    return;
+  }
+  loading.value = true;
+  startTimer();
+
+  try {
+    const res = await translateRequest({
+      from: form.fromLang,
+      to: form.toLang,
+      text: form.text.split("\n"),
+      platform: form.platform,
+    });
+    apiDelay.value = displayDelay.value;
+    stopTimer();
+    if (res.code === 1000) {
+      translateBody.value = formatAndHighlight(res.data);
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error("翻译失败");
+    stopTimer();
+  } finally {
+    loading.value = false;
+  }
+};
+
+const copyResult = () => {
+  if (translateBody.value) {
+    navigator.clipboard
+      .writeText(translateBody.value)
+      .then(() => {
+        ElMessage.success("已复制到剪贴板");
+      })
+      .catch(() => {
+        ElMessage.error("复制失败");
+      });
+  }
+};
 
 const langListStore = useLangListStore();
 
@@ -251,48 +299,6 @@ let platformOptions: selectOptionType = [
     disabled: false,
   },
 ];
-
-const submitTranslate = async () => {
-  if (!form.text) {
-    ElMessage.warning("请输入需要翻译的内容");
-    return;
-  }
-  loading.value = true;
-  startTimer();
-  
-  try {
-    const res = await translateRequest({
-      from: form.fromLang,
-      to: form.toLang,
-      text: form.text.split("\n"),
-      platform: form.platform,
-    });
-    apiDelay.value = displayDelay.value;
-    stopTimer();
-    if (res.code === 1000) {
-      translateBody.value = JSON.stringify(res.data, null, 2);
-    }
-  } catch (error) {
-    console.error(error);
-    ElMessage.error("翻译失败");
-    stopTimer();
-  } finally {
-    loading.value = false;
-  }
-};
-
-const copyResult = () => {
-  if (translateBody.value) {
-    navigator.clipboard
-      .writeText(translateBody.value)
-      .then(() => {
-        ElMessage.success("已复制到剪贴板");
-      })
-      .catch(() => {
-        ElMessage.error("复制失败");
-      });
-  }
-};
 
 onUnmounted(() => {
   stopTimer();
@@ -418,6 +424,7 @@ onUnmounted(() => {
   height: 100% !important;
   padding: 16px;
   border: none;
+  box-shadow: none;
   border-radius: 0;
   background-color: transparent;
   font-size: 14px;
@@ -445,5 +452,37 @@ onUnmounted(() => {
   font-size: 12px;
   margin-left: 4px;
   color: #909399;
+}
+
+.json-output {
+  height: 100%;
+  margin: 0;
+  padding: 12px;
+  border-radius: 4px;
+  overflow: auto;
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+:deep(.hljs) {
+  background: transparent;
+  color: #abb2bf;
+}
+
+:deep(.hljs-attr) {
+  color: #d19a66;
+}
+
+:deep(.hljs-string) {
+  color: #98c379;
+}
+
+:deep(.hljs-number) {
+  color: #d19a66;
+}
+
+:deep(.hljs-literal) {
+  color: #56b6c2;
 }
 </style>

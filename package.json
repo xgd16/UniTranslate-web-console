@@ -17,6 +17,7 @@
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.7",
     "element-plus": "^2.4.2",
+    "highlight.js": "^11.11.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.9",

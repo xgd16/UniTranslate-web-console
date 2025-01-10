@@ -727,11 +727,6 @@ const submit = async () => {
   box-shadow: 0 0 0 1px var(--el-border-color-hover) inset;
 }
 
-:deep(.el-input__inner),
-:deep(.el-textarea__inner) {
-  background-color: var(--el-bg-color);
-}
-
 :deep(.el-switch) {
   --el-switch-on-color: var(--el-color-success);
 }

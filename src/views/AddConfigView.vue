@@ -168,7 +168,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="调用统计" align="center" width="200">
+          <el-table-column label="调用统计" align="center" width="400">
             <template #default="scope">
               <div class="count-info">
                 <el-tooltip content="成功次数">

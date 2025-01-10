@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite --mode development",
-    "build": "run-p type-check \"build-only {@}\" -- --mode production",
-    "build-zip": "run-p type-check \"build-only {@}\" -- --mode production && zip dist.zip -r dist",
+    "build": "vue-tsc --noEmit && vite build --mode production",
+    "build-zip": "npm run build && zip dist.zip -r dist",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",

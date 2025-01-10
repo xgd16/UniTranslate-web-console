@@ -104,9 +104,6 @@ features:
   margin: 0 auto;
   max-width: 960px;
 }
-.content {
-  margin-top: 32px;
-}
 .vp-doc h2 {
   margin-top: 0;
   border-top: none;

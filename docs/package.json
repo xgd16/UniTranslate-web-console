@@ -9,7 +9,7 @@
     "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "devDependencies": {
-    "vitepress": "1.0.0-rc.31",
+    "vitepress": "^1.5",
     "sitemap": "^7.1.1"
   }
 }

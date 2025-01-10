@@ -84,10 +84,10 @@
               text
               type="primary"
               size="small"
+              style="height: 21px"
               v-if="translateBody"
               @click="copyResult"
             >
-              <el-icon><CopyDocument /></el-icon>
               复制
             </el-button>
           </div>

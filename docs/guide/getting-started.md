@@ -16,16 +16,21 @@ UniTranslate 是一个强大的多平台翻译聚合服务，支持谷歌翻译�
 
 ## 📦 安装部署
 
+### 必需组件
+
+- Docker（推荐）或 Go 1.20+
+- MySQL 8.x 或 SQLite
+- Redis（如果使用 Redis 缓存模式）
+
+### 可选组件
+
+- Graylog（如果需要日志管理）
+
+## 安装 UniTranslate
+
 ### Docker 部署（推荐）
 
-```bash
-docker run -d --name unitranslate \
-  -p 8080:8080 \
-  -v /path/to/config:/app/config \
-  xgd/unitranslate:latest
-```
-
-### 源码编译
+UniTranslate 提供了完整的 Docker 部署配置，包含所有必需的服务（翻译服务、MySQL、Redis）。
 
 1. 克隆项目：
 
@@ -34,102 +39,97 @@ git clone https://github.com/xgd16/UniTranslate.git
 cd UniTranslate
 ```
 
-2. 编译：
+2. 启动服务：
 
 ```bash
-go build
+docker compose -p unitranslate -f docker-compose.yml up -d
 ```
 
-## ⚙️ 基础配置
+服务启动后：
 
-1. 创建配置文件 `config/config.yml`：
+- API 服务访问地址：`http://localhost:9431`
+- Web 控制台通过 API 服务访问
+
+> 注意：项目已经包含了预配置的 docker-compose.yml 和配置文件，无需额外配置即可运行。如需自定义配置，可以修改 config.container.yaml 文件。
+
+### 二进制部署
+
+1. 从 [Release](https://github.com/xgd16/UniTranslate/releases) 页面下载对应系统的二进制文件
+
+2. 运行服务
+
+```bash
+./unitranslate
+```
+
+## ⚙️ 配置说明
+
+配置文件示例：
 
 ```yaml
+# 基础 http 配置
 server:
-  port: 8080
-  
+  name: uniTranslate
+  address: "0.0.0.0:9431"
+  cacheMode: redis # redis, mem, off 三种模式
+  cachePlatform: false # 缓存key是否包含平台信息
+  cacheRefreshOnStartup: false # 启动时是否刷新缓存（慎用）
+  key: "your-secret-key" # API 密钥
+  keyMode: 1 # 1: 直接密钥, 2: 加密加签
+  configDeviceMode: "xdb" # xdb: 内置数据库, mysql: MySQL存储
+  recordDeviceMode: "mysql" # mysql 或 sqlite
+  configDeviceDb: "default" # 配置存储的数据库设置
+  cacheWriteToStorage: false # 是否将缓存写入数据库
+  requestRecordKeepDays: 7 # 请求记录保留天数
+  apiEditConfig: false # 是否允许通过API修改配置
+
+# 数据库配置
 database:
-  type: sqlite  # 支持 mysql 或 sqlite
-  
-translation:
-  default: google  # 默认翻译平台
-  platforms:
-    google:
-      enabled: true
-    baidu:
-      enabled: true
-      appId: "your-app-id"
-      secret: "your-secret"
-```
+  default:
+    type: "mysql" # 或 "sqlite"
+    link: "root:password@tcp(localhost:3306)/uni_translate?charset=utf8mb4&parseTime=true&loc=Local"
+    createdAt: "createTime"
+    updatedAt: "updateTime"
+    debug: true
 
-2. 配置翻译平台密钥：
-   - [获取谷歌翻译密钥](/guide/configuration#google-translate)
-   - [获取百度翻译密钥](/guide/configuration#baidu-translate)
-   - [获取有道翻译密钥](/guide/configuration#youdao-translate)
+# Redis配置
+redis:
+  default:
+    address: localhost:6379
+    db: 0
+    pass: ""
 
-## 🔑 认证配置
+# 日志配置
+logger:
+  path: "./log/default"
+  level: "all"
+  stdout: false
+  writerColorEnable: true
 
-为了保证 API 调用的安全性，UniTranslate 使用签名认证机制：
-
-1. 生成 API 密钥：
-
-```bash
-./unitranslate key generate
-```
-
-2. 在配置文件中添加认证信息：
-
-```yaml
-auth:
-  enabled: true
-  keys:
-    - id: "your-api-id"
-      secret: "your-api-secret"
+# GrayLog配置（可选）
+grayLog:
+  open: false
+  host: ""
+  port: ""
 ```
 
 ## 📝 使用示例
 
 ### RESTful API
 
+- 访问 Web 控制台
+打开浏览器访问 `http://127.0.0.1:9431`
+
+- 测试翻译接口
 ```bash
-curl -X POST "http://localhost:8080/api/v1/translate" \
+curl -X POST http://localhost:9431/api/translate \
+  -H "auth_key: your-secret-key" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: your-api-key" \
   -d '{
-    "text": "Hello World",
-    "source": "en",
-    "target": "zh"
+    "text": "Hello, World!",
+    "from": "en",
+    "to": "zh"
   }'
-```
-
-### Go SDK
-
-```go
-package main
-
-import "github.com/xgd16/UniTranslate/sdk"
-
-func main() {
-    client := sdk.NewClient("your-api-key")
-    result, err := client.Translate("Hello World", "en", "zh")
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println(result)
-}
-```
-
-### PHP SDK
-
-```php
-<?php
-require 'vendor/autoload.php';
-
-use UniTranslate\SDK\Client;
-
-$client = new Client('your-api-key');
-$result = $client->translate('Hello World', 'en', 'zh');
-echo $result;
 ```
 
 ## 🔍 下一步

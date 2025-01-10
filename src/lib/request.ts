@@ -10,22 +10,33 @@ import Router from "@/router";
 import { isJSON, AuthEncrypt } from "./common";
 import { useSystemInitConfigStore } from "@/stores/counter";
 
-const domain = window.location.origin
-// const domain = "http://127.0.0.1:9439";
+// Get current environment
+const isDev = import.meta.env.DEV;
+const apiUrl = import.meta.env.VITE_API_URL;
+
+// Determine the base URL based on environment
+const domain = isDev
+  ? apiUrl || 'http://localhost:9431'  // Development fallback
+  : apiUrl || window.location.origin;   // Production fallback
+
+if (import.meta.env.DEV) {
+  console.log('Running in development mode');
+  console.log('API URL:', domain);
+}
 
 localStorage.setItem("baseUrl", domain);
 
 const baseUrl = localStorage.getItem("baseUrl") ?? domain;
 
-// 创建axios实例
+// Create axios instance
 const request = axios.create({
   timeout: 60 * 1000,
   params: {},
+  baseURL: baseUrl,
 });
 
 request.interceptors.request.use(
   function (config: InternalAxiosRequestConfig) {
-    config.baseURL = localStorage.getItem("baseUrl") ?? baseUrl;
     const keyStr = localStorage.getItem("key") ?? "";
     const systemConfig = useSystemInitConfigStore().config;
     // 判断验证方式处理数据

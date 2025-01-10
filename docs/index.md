@@ -1,7 +1,5 @@
 ---
 layout: home
-title: UniTranslate - 强大的多平台翻译聚合服务
-titleTemplate: 让翻译更简单，更智能
 
 hero:
   name: UniTranslate
@@ -22,23 +20,23 @@ features:
   - icon: 🌐
     title: 多平台支持
     details: 支持谷歌翻译、百度翻译、有道翻译等多个主流翻译平台，一次接入，随意切换。
-    
+
   - icon: 🔄
     title: 智能路由
     details: 根据翻译质量、响应时间和成本自动选择最佳翻译平台，让翻译更智能。
-    
+
   - icon: 🛡️
     title: 自动故障转移
     details: 当某个翻译平台出现故障时，自动切换到备用平台，确保服务的高可用性。
-    
+
   - icon: ⚡
     title: 高效缓存
     details: 智能缓存翻译结果，减少重复请求，降低成本并提高响应速度。
-    
+
   - icon: 🔌
     title: 简单集成
     details: 提供 RESTful API 和多语言 SDK，轻松集成到您的应用中。仅需几行代码即可完成接入。
-    
+
   - icon: 📊
     title: 数据统计
     details: 实时监控翻译用量、成功率、响应时间等关键指标，助您做出更好的决策。
@@ -54,12 +52,15 @@ features:
   - icon: 🚀
     title: 高性能
     details: 采用 Go 语言开发，具有极高的并发处理能力，支持每秒数千次的翻译请求。
-
 ---
 
-<div class="mt-12 mb-16 flex justify-center">
-  <h2 class="text-center text-2xl font-bold">为什么选择 UniTranslate？</h2>
-</div>
+<div class="vp-doc">
+
+<div class="container">
+
+## 为什么选择 UniTranslate？
+
+<div class="content">
 
 ### 🎯 解决痛点
 
@@ -84,46 +85,41 @@ features:
 - **社交应用**：即时消息翻译
 - **企业网站**：网站内容国际化
 
-## ✨ 项目组件
+### ✨ 项目组件
 
-- 🛠️ [UniTranslate](https://github.com/xgd16/UniTranslate) - 核心翻译服务
-- 🌐 [UniTranslate Web Console](https://github.com/xgd16/UniTranslate-web-console) - Web 控制台
-- 📚 [API 文档](https://apifox.com/apidoc/shared-335b66b6-90dd-42af-8a1b-f7d1a2c3f351) - 接口文档
+- [UniTranslate](https://github.com/xgd16/UniTranslate) - 核心翻译服务
+- [UniTranslate Web Console](https://github.com/xgd16/UniTranslate-web-console) - Web 控制台
 
-## 💫 功能特性
+</div>
+</div>
+</div>
 
-### 🔄 多平台翻译聚合
-
-- ✅ 支持主流商业翻译服务
-- 🤖 AI 翻译支持
-- 🆓 免费翻译服务集成
-
-### ⚡ 智能路由和缓存
-
-- 🎯 API 优先级智能管理
-- 🔄 自动故障转移保护
-- 📦 高效的多级缓存系统
-
-### 🔌 多种接入方式
-
-- 🌐 RESTful API 接口
-- 💻 命令行工具支持
-- 🖥️ 可视化 Web 控制台
-- 🔗 兼容多种接入方式
-
-## 🚀 快速开始
-
-查看我们的 [快速开始指南](./guide/getting-started.md) 开始使用 UniTranslate！
-
-## 🤝 参与贡献
-
-我们欢迎各种形式的贡献：
-
-- 🐛 提交问题和建议
-- 💡 提供新的想法
-- 🔧 提交代码改进
-- 📖 改进文档
-
-## 📄 许可证
-
-[GNU Affero General Public License v3.0](https://github.com/xgd16/UniTranslate/blob/master/LICENSE)
+<style>
+.vp-doc {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+.container {
+  margin: 0 auto;
+  max-width: 960px;
+}
+.content {
+  margin-top: 32px;
+}
+.vp-doc h2 {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+  text-align: center;
+}
+.vp-doc h3 {
+  margin-top: 48px;
+}
+.vp-doc ul {
+  margin: 16px 0;
+}
+.vp-doc ul li {
+  margin: 8px 0;
+}
+</style>

@@ -19,7 +19,7 @@ const isLoaded = ref(false)
 <style scoped>
 .api-doc-container {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 120px);
   position: relative;
 }
 

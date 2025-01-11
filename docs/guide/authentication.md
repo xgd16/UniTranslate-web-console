@@ -4,7 +4,7 @@ UniTranslate 提供了两种认证模式，可以根据安全需求选择合适�
 
 ## 认证要求
 
-大部分 API 端点都需要认证。在 API 文档中，需要认证的接口都标有 图标。未经认证的请求将收到 404 状态码的响应。
+大部分 API 端点都需要认证。在 API 文档中，需要认证的接口都标有 图标。
 
 ## 认证模式
 
@@ -59,9 +59,9 @@ curl -X POST "http://localhost:9431/api/translate?key=your-secret-key" \
   }'
 ```
 
-### 模式 2：加密加签认证
+### 模式 2：HMAC-SHA256 签名认证
 
-这种模式提供更高的安全性，通过对请求数据进行加密和签名来验证请求的合法性。
+这种模式提供更高的安全性，通过对请求参数进行签名来验证请求的合法性。签名过程采用 HMAC-SHA256 算法，确保请求数据的完整性和真实性。
 
 #### 配置示例
 
@@ -70,305 +70,78 @@ curl -X POST "http://localhost:9431/api/translate?key=your-secret-key" \
 ```yaml
 server:
   key: "your-secret-key"  # API 密钥
-  keyMode: 2  # 使用加密加签模式
+  keyMode: 2  # 使用签名认证模式
 ```
 
-#### 使用方法
+#### 签名生成流程
 
-1. 准备请求数据：
+1. **准备参数**
+   - 收集所有请求参数（包括业务参数）到一个映射（Map/Dictionary）中
+   - 参数支持多种数据类型：
+     - 基本类型（字符串、数字等）
+     - 嵌套对象
+     - 数组
+
+2. **生成签名**
+   - 系统按照以下步骤生成签名：
+     1. 对参数 Map 中的键进行字典序排序
+     2. 将排序后的参数转换为特定格式的字符串
+     3. 使用分配的密钥（Secret Key）对字符串进行 HMAC-SHA256 加密
+     4. 输出十六进制格式的签名
+
+3. **发送请求**
+   - 在请求中包含：
+     - 所有原始请求参数
+     - 生成的签名（作为 sign 参数）
+
+#### 签名规则
+
+- 参数排序采用字典序（ASCII 升序）
+- 复杂数据类型的处理：
+  - 嵌套对象：按照键的字典序递归处理
+  - 数组：保持原始顺序
+- 生成的签名为 64 位长的十六进制字符串
+
+#### 示例
+
+请求参数：
 ```json
 {
-  "text": "Hello, World!",
-  "from": "en",
-  "to": "zh"
+    "name": "test",
+    "age": 25
 }
 ```
 
-2. 加密过程：
-   - 将请求数据转换为 JSON 字符串
-   - 生成 16 字节的随机 IV（初始化向量）
-   - 使用 AES-256-CBC 算法和密钥加密数据
-   - 将 IV 和加密后的数据拼接
-   - 对拼接后的数据进行 Base64 编码
-   - 计算 HMAC-SHA256 签名
-
-3. 在请求头中添加：
-```http
-auth_key: encrypted-data.signature
+使用密钥 "testkey123" 生成的签名：
+```
+d8f6ca2700f502a8ed0fe2e1318dc46aacd03a364cc54dca656c3407e12eb1eb
 ```
 
-或者在请求参数中添加：
-```http
-?key=encrypted-data.signature
-```
+#### SDK 支持
 
-#### 加密示例代码
-
-Go 语言示例：
-
-```go
-package main
-
-import (
-    "crypto/aes"
-    "crypto/cipher"
-    "crypto/hmac"
-    "crypto/rand"
-    "crypto/sha256"
-    "encoding/base64"
-    "encoding/json"
-)
-
-func encryptRequest(data interface{}, key string) (string, error) {
-    // 1. 转换为 JSON
-    jsonData, err := json.Marshal(data)
-    if err != nil {
-        return "", err
-    }
-
-    // 2. 生成随机 IV
-    iv := make([]byte, aes.BlockSize)
-    if _, err := rand.Read(iv); err != nil {
-        return "", err
-    }
-
-    // 3. AES 加密
-    block, err := aes.NewCipher([]byte(key))
-    if err != nil {
-        return "", err
-    }
-
-    // 加密
-    mode := cipher.NewCBCEncrypter(block, iv)
-    encrypted := make([]byte, len(jsonData))
-    mode.CryptBlocks(encrypted, jsonData)
-
-    // 4. 拼接 IV 和加密数据
-    combined := append(iv, encrypted...)
-
-    // 5. Base64 编码
-    encryptedBase64 := base64.StdEncoding.EncodeToString(combined)
-
-    // 6. 计算签名
-    h := hmac.New(sha256.New, []byte(key))
-    h.Write([]byte(encryptedBase64))
-    signature := base64.StdEncoding.EncodeToString(h.Sum(nil))
-
-    // 7. 组合结果
-    return encryptedBase64 + "." + signature, nil
-}
-```
-
-Python 语言示例：
-
-```python
-import json
-import base64
-import hmac
-import hashlib
-import os
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad
-
-def encrypt_request(data, key):
-    # 1. 转换为 JSON
-    json_data = json.dumps(data).encode()
-    
-    # 2. 生成随机 IV
-    iv = os.urandom(AES.block_size)
-    
-    # 3. AES 加密
-    cipher = AES.new(key.encode(), AES.MODE_CBC, iv)
-    ct_bytes = cipher.encrypt(pad(json_data, AES.block_size))
-    
-    # 4. 拼接 IV 和加密数据
-    combined = iv + ct_bytes
-    
-    # 5. Base64 编码
-    encrypted = base64.b64encode(combined).decode()
-    
-    # 6. 计算签名
-    signature = base64.b64encode(
-        hmac.new(key.encode(), encrypted.encode(), hashlib.sha256).digest()
-    ).decode()
-    
-    # 7. 组合结果
-    return f"{encrypted}.{signature}"
-```
+UniTranslate 提供多语言 SDK 支持，包括：
+- [PHP](https://github.com/xgd16/UniTranslate/blob/master/sdkcode/php/UniTranslate.php)
+- [TypeScript/JavaScript](https://github.com/xgd16/UniTranslate/blob/master/sdkcode/typescript/UniTranslate.ts)
+- [Java](https://github.com/xgd16/UniTranslate/blob/master/sdkcode/java/UniTranslate.java)
+- [Python](https://github.com/xgd16/UniTranslate/blob/master/sdkcode/python/uni_translate.py)
+- [C#](https://github.com/xgd16/UniTranslate/blob/master/sdkcode/csharp/UniTranslate.cs)
 
 ## 最佳实践
 
 1. 密钥管理
-   - 使用足够长度和复杂度的密钥
+   - 妥善保管密钥，避免泄露
    - 定期更换密钥
-   - 不同环境使用不同的密钥
+   - 不同环境使用不同密钥
+   - 密钥长度建议不少于 16 位
 
-2. 安全建议
-   - 生产环境建议使用模式 2（加密加签认证）
-   - 所有请求使用 HTTPS
+2. 签名验证
+   - 验证签名时注意参数排序规则
+   - 注意处理特殊字符和编码问题
+   - 建议添加时间戳参数，控制请求有效期
+   - 在开发环境中打印签名字符串，便于调试
+
+3. 安全建议
+   - 使用 HTTPS 传输
+   - 敏感环境建议使用签名认证模式
+   - 定期检查访问日志，及时发现异常
    - 实现请求频率限制
-   - 记录和监控异常认证请求
-
-3. 性能考虑
-   - 模式 1 性能更好，适合内网环境
-   - 模式 2 安全性更高，适合外网环境
-   - 可以根据具体场景选择合适的认证模式
-
-## 常见问题
-
-1. 认证失败
-   - 检查密钥是否正确
-   - 确认认证模式配置
-   - 验证请求头格式（使用 auth_key）或 URL 参数（使用 key）
-   - 检查 IV 是否正确生成和处理（模式 2）
-
-2. 加密问题
-   - 确保加密算法实现正确
-   - 检查数据编码格式
-   - 验证签名计算过程
-   - 确保 IV 随机生成且正确拼接
-
-## 🔐 认证
-
-UniTranslate 使用自定义的签名认证机制来确保 API 调用的安全性。
-
-### 认证机制
-
-认证过程包含以下步骤：
-
-1. 准备请求参数
-2. 对参数进行排序和格式化
-3. 使用密钥和格式化后的参数生成签名
-4. 在请求头中添加签名
-
-### 签名生成规则
-
-签名生成遵循以下规则：
-
-1. 将所有参数按照键值对格式化：`key:value`
-2. 对于数组值，将其转换为逗号分隔的字符串：`key:value1,value2,value3`
-3. 对于嵌套对象，使用 `|` 包裹其格式化结果：`key:|nestedKey1:value1&nestedKey2:value2|`
-4. 将所有格式化后的参数按字母顺序排序
-5. 使用 `&` 连接所有参数
-6. 将密钥拼接在参数字符串前面
-7. 对最终字符串进行 MD5 加密
-
-### 代码示例
-
-#### TypeScript/JavaScript
-
-```typescript
-import { MD5 } from "crypto-js";
-
-function AuthEncrypt(key: string, params: { [key: string]: any }): string {
-    return MD5(key + sortMapToStr(params)).toString();
-}
-
-const sortMapToStr = (map: { [key: string]: any }): string => {
-    let mapArr = new Array();
-    for (const key in map) {
-        const item = map[key];
-        if (Array.isArray(item)) {
-            mapArr.push(`${key}:${item.join(",")}`);
-            continue;
-        }
-        if (typeof item === "object") {
-            mapArr.push(`${key}:|${sortMapToStr(item)}|`);
-            continue;
-        }
-        mapArr.push(`${key}:${item}`);
-    }
-    return mapArr.sort().join("&");
-};
-```
-
-#### PHP
-
-```php
-class AuthEncrypt {
-    private string $key;
-    private array $params;
-
-    public function __construct(string $key, array $params)
-    {
-        $this->key = $key;
-        $this->params = $params;
-    }
-
-    public function encrypt(): string
-    {
-        return md5($this->key . $this->sortMapToStr($this->params));
-    }
-
-    private function isAssociativeArray(array $arr): bool {
-        return array_keys($arr) !== range(0, count($arr) - 1);
-    }
-
-    private function sortMapToStr(array $params): string
-    {
-        $mapArr = [];
-        foreach ($params as $key => $value) {
-            if (is_array($value)) {
-                if (!$this->isAssociativeArray($value)) {
-                    $mapArr[] = "{$key}:" . implode(',', $value);
-                } else {
-                    $mapArr[] = "{$key}:|{$this->sortMapToStr($value)}|";
-                }
-                continue;
-            }
-            $mapArr[] = "{$key}:" . $value;
-        }
-        asort($mapArr);
-        return implode('&', $mapArr);
-    }
-}
-```
-
-### 使用示例
-
-```typescript
-// 请求参数
-const params = {
-    c: {
-        cc: 1,
-        cb: 2,
-        ca: 3,
-        cd: 4,
-    },
-    a: 1,
-    b: [4, 1, 2],
-};
-
-// 生成签名
-const sign = AuthEncrypt("your-secret-key", params);
-
-// API 请求
-const response = await fetch("https://api.example.com/translate", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "X-Auth-Sign": sign
-    },
-    body: JSON.stringify(params)
-});
-```
-
-### 注意事项
-
-1. **参数排序**
-   - 所有参数必须按照字母顺序排序
-   - 嵌套对象内的参数也需要排序
-
-2. **数据类型处理**
-   - 数组值会被转换为逗号分隔的字符串
-   - 嵌套对象会被特殊处理，使用 `|` 包裹
-
-3. **安全性建议**
-   - 密钥要保管好，不要泄露
-   - 建议使用 HTTPS 传输
-   - 定期更换密钥
-
-4. **常见问题**
-   - 确保参数名和值的大小写一致
-   - 注意特殊字符的处理
-   - 验证失败时检查参数排序
